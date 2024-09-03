@@ -23,14 +23,23 @@
 **Usage and License Notices**: The data, code, and checkpoint are intended and licensed for research use only. They are also restricted to use that follow the license agreement of Vary. 
 
 
-
-
 ## Contents
 - [Install](#install)
-- [GOT Weights](#vary-weights)
-- [Demo](#Demo)
+- [GOT Weights](#got-weights)
+- [Demo](#demo)
 - [Train](#train)
-- [Eval](#Eval)
+- [Eval](#eval)
+
+***
+<p align="center">
+<img src="assets/got_support.jpg" style="width: 800px" align=center>
+</p>
+<p align="center">
+<a href="">Towards OCR-2.0 via a Unified End-to-end Model</a>       
+</p>
+
+***
+
 
 ## Install
 0. Our environment is cuda11.8+torch2.0.1
