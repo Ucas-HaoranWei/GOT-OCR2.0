@@ -2,7 +2,7 @@
 
 <a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/"><img src="https://img.shields.io/badge/Project-Page-Green"></a>
 <a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/"><img src="https://img.shields.io/badge/Paper-PDF-orange"></a> 
-<a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/"><img src="https://img.shields.io/badge/Wechat-blue"></a> 
+<a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat.jpg"><img src="https://img.shields.io/badge/Wechat-blue"></a> 
 
 [Haoran Wei*](https://scholar.google.com/citations?user=J4naK0MAAAAJ&hl=en), Chenglong Liu*, Jinyue Chen, Jia Wang, Lingyu Kong, Yanming Xu,  [Zheng Ge](https://joker316701882.github.io/), Liang Zhao, [Jianjian Sun](https://scholar.google.com/citations?user=MVZrGkYAAAAJ&hl=en), [Yuang Peng](https://scholar.google.com.hk/citations?user=J0ko04IAAAAJ&hl=zh-CN&oi=ao), Chunrui Han, [Xiangyu Zhang](https://scholar.google.com/citations?user=yuB-cfoAAAAJ&hl=en)
 
