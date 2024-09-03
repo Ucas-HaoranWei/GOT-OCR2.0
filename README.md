@@ -13,6 +13,7 @@
 
 ## Release
 
+- [2024/9/03]🔥🔥🔥 We open-source the codes, weights, and benchmarks. The paper can be found in this repo. We also have submitted it to Arxiv. 
 - [2024/9/03]🔥🔥🔥 We release the OCR-2.0 model GOT! 
 
 
@@ -28,8 +29,116 @@
 - [Install](#install)
 - [GOT Weights](#vary-weights)
 - [Demo](#Demo)
-- [Eval](#Eval)
 - [Train](#train)
+- [Eval](#Eval)
+
+## Install
+0. Our environment is cuda11.8+torch2.0.1
+1. Clone this repository and navigate to the GOT folder
+```bash
+git clone https://github.com/Ucas-HaoranWei/GOT-OCR2.0.git
+cd 'the GOT folder'
+```
+2. Install Package
+```Shell
+conda create -n got python=3.10 -y
+conda activate got
+pip install -e .
+```
+
+3. Install Flash-Attention
+```
+pip install ninja
+pip install flash-attn --no-build-isolation
+```
+## GOT Weights
+- [Google Drive]()
+- [BaiduYun]()
+
+## Demo
+1. plain texts OCR:
+```Shell
+python3 GOT/demo/run_ocr_2.0.py  --model-name  /GOT_weights/  --image-file  /an/image/file.png  --type ocr
+```
+2. format texts OCR:
+```Shell
+python3 GOT/demo/run_ocr_2.0.py  --model-name  /GOT_weights/  --image-file  /an/image/file.png  --type format
+```
+3. fine-grained OCR:
+```Shell
+python3 GOT/demo/run_ocr_2.0.py  --model-name  /GOT_weights/  --image-file  /an/image/file.png  --type format/ocr --box [x1,y1,x2,y2]
+```
+```Shell
+python3 GOT/demo/run_ocr_2.0.py  --model-name  /GOT_weights/  --image-file  /an/image/file.png  --type format/ocr --color red/green/blue
+```
+4. multi-crop OCR:
+```Shell
+python3 GOT/demo/run_ocr_2.0_crop.py  --model-name  /GOT_weights/ --image-file  /an/image/file.png 
+```
+5. multi-page OCR (the image path contains multiple .png files):
+```Shell
+python3 GOT/demo/run_ocr_2.0_crop.py  --model-name  /GOT_weights/ --image-file  /images/path/  --multi-page
+```
+6. render the formatted OCR results:
+```Shell
+python3 GOT/demo/run_ocr_2.0.py  --model-name  /GOT_weights/  --image-file  /an/image/file.png  --type format --render
+ ```
+**Note**:
+The rendering results can be found in /results/demo.html. Please open the demo.html to see the results.
+
+
+## Train
+1. This codebase only supports post-training (stage-2/stage-3) upon our GOT weights.
+2. If you want train from stage-1 described in our paper, you need this [repo](https://github.com/Ucas-HaoranWei/Vary-tiny-600k).
+
+```Shell
+deepspeed   /GOT-OCR-2.0-master/GOT/train/train_GOT.py \
+ --deepspeed /GOT-OCR-2.0-master/zero_config/zero2.json    --model_name_or_path /GOT_weights/ \
+ --use_im_start_end True   \
+ --bf16 True   \
+ --gradient_accumulation_steps 2    \
+ --evaluation_strategy "no"   \
+ --save_strategy "steps"  \
+ --save_steps 200   \
+ --save_total_limit 1   \
+ --weight_decay 0.    \
+ --warmup_ratio 0.001     \
+ --lr_scheduler_type "cosine"    \
+ --logging_steps 1    \
+ --tf32 True     \
+ --model_max_length 8192    \
+ --gradient_checkpointing True   \
+ --dataloader_num_workers 8    \
+ --report_to none  \
+ --per_device_train_batch_size 2    \
+ --num_train_epochs 1  \
+ --learning_rate 2e-5   \
+ --datasets pdf-ocr+scence \
+ --output_dir /your/output.path
+```
+**Note**:
+1. Change the corresponding data information in constant.py.
+2. Change line 37 in conversation_dataset_qwen.py to your data_name.
+
+
+## Eval
+1. We use the [Fox](https://github.com/ucaslcl/Fox) and [OneChart](https://github.com/LingyvKong/OneChart) benchmarks, and other benchmarks can be found in the weights download link.
+2. The eval codes can be found in GOT/eval.
+3. You can use the evaluate_GOT.py to run the eval. If you have 8 GPUs， the --num-chunks can be set to 8.
+ ```Shell
+python3 GOT/eval/evaluate_GOT.py --model-name /GOT_weights/ --gtfile_path xxxx.json --image_path  /image/path/ --out_path /data/eval_results/GOT_mathpix_test/ --num-chunks 8 --datatype OCR
+```
+
+## Contact
+If you are interested in this work or have questions about the code or the paper, please join our communication [Wechat]() group.
+
+## Acknowledgement
+- [Vary](https://github.com/Ucas-HaoranWei/Vary/): the codebase we built upon!
+- [Qwen](https://github.com/QwenLM/Qwen): the LLM base model of Vary, which is good at both English and Chinese!
+
+
+## Citation
+Coming soon.
 
 
 
