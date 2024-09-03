@@ -61,7 +61,7 @@ pip install ninja
 pip install flash-attn --no-build-isolation
 ```
 ## GOT Weights
-- [Google Drive]()
+- [Google Drive](https://drive.google.com/drive/folders/1OdDtsJ8bFJYlNUzCQG4hRkUL6V-qBQaN?usp=sharing)
 - [BaiduYun](https://pan.baidu.com/s/1G4aArpCOt6I_trHv_1SE2g) code: OCR2
 
 ## Demo
