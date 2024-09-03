@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" data-lt-installed="true"><head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script>
+    const text ="\\title{\n"+
+"MADRIX \\({ }^{\\circledR}\\) PLEXUS -\n"+
+"}\n"+
+"\\section*{Quick Start Guide \\& Technical Manual}\n"+
+"\\(5^{\\text {th }}\\) Edition - November 2017\n"+
+"Thank You For Purchasing MADRIK \\({ }^{\\circledR}\\) PLEXUS!\n"+
+"Please read this guide carefully and thoroughly before using MADRIX \\({ }^{\\circledR}\\) PLEXUS. Make sure that you fully understand all information.\n"+
+"This MADRIX \\({ }^{\\circledR}\\) PLEXUS Quick Start Guide and the MADRIX \\({ }^{\\circledR}\\) PLEXUS User Manual are written in English and German.\n"+
+"Developed and made in Germany.\n"+
+"\\section*{Imprint}\n"+
+"inaage GmbH\n"+
+"Wiener Straße 56\n"+
+"01219 Dresden\n"+
+"Germany\n"+
+"Managing Directors: Christian Hertel, Sebastian Pinzer, Sebastian Wissmann\n"+
+"Web www.madrix.com\n"+
+"E-mail info@madrix.com\n"+
+"Phone +4935186268690\n" 
+  </script>
+  <style>
+    #content {
+      max-width: 800px;
+      margin: auto;
+    }
+  </style>
+  <script>
+    let script = document.createElement('script');
+    script.src = "https://cdn.jsdelivr.net/npm/mathpix-markdown-it@1.3.6/es5/bundle.js";
+    document.head.append(script);
+
+    script.onload = function() {
+      const isLoaded = window.loadMathJax();
+      if (isLoaded) {
+        console.log('Styles loaded!')
+      }
+
+      const el = window.document.getElementById('content-text');
+      if (el) {
+        const options = {
+          htmlTags: true
+        };
+        const html = window.render(text, options);
+        el.outerHTML = html;
+      }
+    };
+  </script>
+</head>
+<body>
+  <div id="content"><div id="content-text"></div></div>
+</body>
+</html>

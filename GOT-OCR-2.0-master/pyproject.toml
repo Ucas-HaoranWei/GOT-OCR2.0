@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "GOT"
+version = "0.1.0"
+description = "Towards OCR-2.0."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+]
+dependencies = [
+    "markdown2[all]", "numpy",
+    "requests", "sentencepiece", "tokenizers>=0.15.2",
+    "torch", "torchvision", "wandb",
+    "shortuuid", "httpx==0.24.0",
+    "deepspeed==0.12.3",
+    "peft==0.4.0",
+    "albumentations",
+    "opencv-python",
+    "tiktoken==0.6.0",
+    "accelerate==0.28.0",
+    "transformers==4.37.2",
+    "bitsandbytes==0.41.0",
+    "scikit-learn==1.2.2",
+    "sentencepiece==0.1.99",
+    "einops==0.6.1", "einops-exts==0.0.4", "timm==0.6.13",
+]
+
+[tool.setuptools.packages.find]
+exclude = ["assets*", "benchmark*", "docs", "dist*", "playground*", "scripts*", "tests*"]
+
+[tool.wheel]
+exclude = ["assets*", "benchmark*", "docs", "dist*", "playground*", "scripts*", "tests*"]
