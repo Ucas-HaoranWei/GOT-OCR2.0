@@ -13,7 +13,7 @@
 
 ## Release
 
-- [2024/9/03]🔥🔥🔥 We open-source the codes, weights, and benchmarks. The paper can be found in this repo. We also have submitted it to Arxiv. 
+- [2024/9/03]🔥🔥🔥 We open-source the codes, weights, and benchmarks. The paper can be found in this [repo](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/GOT-OCR-2.0-paper.pdf). We also have submitted it to Arxiv. 
 - [2024/9/03]🔥🔥🔥 We release the OCR-2.0 model GOT! 
 
 
