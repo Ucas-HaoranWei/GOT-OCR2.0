@@ -62,7 +62,7 @@ pip install flash-attn --no-build-isolation
 ```
 ## GOT Weights
 - [Google Drive]()
-- [BaiduYun]()
+- [BaiduYun](https://pan.baidu.com/s/1G4aArpCOt6I_trHv_1SE2g) code: OCR2
 
 ## Demo
 1. plain texts OCR:
