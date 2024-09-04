@@ -1,7 +1,7 @@
 <h3><a href="">General OCR Theory: Towards OCR-2.0 via a Unified End-to-end Model</a></h3>
 
 <a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/"><img src="https://img.shields.io/badge/Project-Page-Green"></a>
-<a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/"><img src="https://img.shields.io/badge/Paper-PDF-orange"></a> 
+<a href="https://arxiv.org/abs/2409.01704"><img src="https://img.shields.io/badge/Paper-PDF-orange"></a> 
 <a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat.jpg"><img src="https://img.shields.io/badge/Wechat-blue"></a> 
 
 [Haoran Wei*](https://scholar.google.com/citations?user=J4naK0MAAAAJ&hl=en), Chenglong Liu*, Jinyue Chen, Jia Wang, Lingyu Kong, Yanming Xu,  [Zheng Ge](https://joker316701882.github.io/), Liang Zhao, [Jianjian Sun](https://scholar.google.com/citations?user=MVZrGkYAAAAJ&hl=en), [Yuang Peng](https://scholar.google.com.hk/citations?user=J0ko04IAAAAJ&hl=zh-CN&oi=ao), Chunrui Han, [Xiangyu Zhang](https://scholar.google.com/citations?user=yuB-cfoAAAAJ&hl=en)
@@ -147,7 +147,22 @@ If you are interested in this work or have questions about the code or the paper
 
 
 ## Citation
-Coming soon.
+```bibtex
+@misc{wei2024generalocrtheoryocr20,
+      title={General OCR Theory: Towards OCR-2.0 via a Unified End-to-end Model}, 
+      author={Haoran Wei and Chenglong Liu and Jinyue Chen and Jia Wang and Lingyu Kong and Yanming Xu and Zheng Ge and Liang Zhao and Jianjian Sun and Yuang Peng and Chunrui Han and Xiangyu Zhang},
+      year={2024},
+      eprint={2409.01704},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2409.01704}, 
+}
+@article{wei2024vary,
+  title={Vary: Scaling up the Vision Vocabulary for Large Vision-Language Models},
+  author={Wei, Haoran and Kong, Lingyu and Chen, Jinyue and Zhao, Liang and Ge, Zheng and Yang, Jinrong and Sun, Jianjian and Han, Chunrui and Zhang, Xiangyu},
+  journal={arXiv preprint arXiv:2312.06109},
+  year={2023}
+}
 
 
 
