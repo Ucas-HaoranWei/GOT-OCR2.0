@@ -157,7 +157,7 @@ If you are interested in this work or have questions about the code or the paper
       primaryClass={cs.CV},
       url={https://arxiv.org/abs/2409.01704}, 
 }
-@article{wei2024vary,
+@article{wei2023vary,
   title={Vary: Scaling up the Vision Vocabulary for Large Vision-Language Models},
   author={Wei, Haoran and Kong, Lingyu and Chen, Jinyue and Zhao, Liang and Ge, Zheng and Yang, Jinrong and Sun, Jianjian and Han, Chunrui and Zhang, Xiangyu},
   journal={arXiv preprint arXiv:2312.06109},
