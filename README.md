@@ -149,14 +149,11 @@ If you are interested in this work or have questions about the code or the paper
 
 ## Citation
 ```bibtex
-@misc{wei2024generalocrtheoryocr20,
-      title={General OCR Theory: Towards OCR-2.0 via a Unified End-to-end Model}, 
-      author={Haoran Wei and Chenglong Liu and Jinyue Chen and Jia Wang and Lingyu Kong and Yanming Xu and Zheng Ge and Liang Zhao and Jianjian Sun and Yuang Peng and Chunrui Han and Xiangyu Zhang},
-      year={2024},
-      eprint={2409.01704},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2409.01704}, 
+@article{wei2024general,
+  title={General OCR Theory: Towards OCR-2.0 via a Unified End-to-end Model},
+  author={Wei, Haoran and Liu, Chenglong and Chen, Jinyue and Wang, Jia and Kong, Lingyu and Xu, Yanming and Ge, Zheng and Zhao, Liang and Sun, Jianjian and Peng, Yuang and others},
+  journal={arXiv preprint arXiv:2409.01704},
+  year={2024}
 }
 @article{wei2023vary,
   title={Vary: Scaling up the Vision Vocabulary for Large Vision-Language Models},
