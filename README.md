@@ -27,7 +27,7 @@
 ## Community contributions
 We encourage everyone to develop GOT applications based on this repo. Thanks for the following contributions :
 
-[Colab of GOT]()
+[Colab of GOT](https://colab.research.google.com/drive/1nmiNciZ5ugQVp4rFbL9ZWpEPd92Y9o7p?usp=sharing)
 
 ## Contents
 - [Install](#install)
