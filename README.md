@@ -24,7 +24,7 @@
 **Usage and License Notices**: The data, code, and checkpoint are intended and licensed for research use only. They are also restricted to use that follow the license agreement of Vary. 
 
 
-## Community contribution
+## Community contributions
 We encourage everyone to develop GOT applications based on this repo. Thanks for the following contributions :
 
 [Colab of GOT]()
