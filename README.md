@@ -134,8 +134,8 @@ deepspeed   /GOT-OCR-2.0-master/GOT/train/train_GOT.py \
  --output_dir /your/output.path
 ```
 **Note**:
-1. Change the corresponding data information in constant.py.
-2. Change line 37 in conversation_dataset_qwen.py to your data_name.
+1. Change the corresponding data information in [constant.py](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/tree/main/GOT-OCR-2.0-master/GOT/utils).
+2. Change line 37 in [conversation_dataset_qwen.py](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/tree/main/GOT-OCR-2.0-master/GOT/data) to your data_name.
 
 
 ## Eval
@@ -147,7 +147,7 @@ python3 GOT/eval/evaluate_GOT.py --model-name /GOT_weights/ --gtfile_path xxxx.j
 ```
 
 ## Contact
-If you are interested in this work or have questions about the code or the paper, please join our communication [Wechat]() group.
+If you are interested in this work or have questions about the code or the paper, please join our communication [Wechat](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat.jpg) group.
 
 ## Acknowledgement
 - [Vary](https://github.com/Ucas-HaoranWei/Vary/): the codebase we built upon!
