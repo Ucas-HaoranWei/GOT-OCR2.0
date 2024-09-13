@@ -5,6 +5,7 @@
 <a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat.jpg"><img src="https://img.shields.io/badge/Wechat-blue"></a> 
 <a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat2.jpg"><img src="https://img.shields.io/badge/Wechat2-blue"></a> 
 <a href="https://zhuanlan.zhihu.com/p/718163422"><img src="https://img.shields.io/badge/zhihu-red"></a> 
+<a href="https://huggingface.co/spaces/Tonic/GOT-OCR"><img src="https://img.shields.io/badge/demo-green"></a> 
 
 [Haoran Wei*](https://scholar.google.com/citations?user=J4naK0MAAAAJ&hl=en), Chenglong Liu*, Jinyue Chen, Jia Wang, Lingyu Kong, Yanming Xu,  [Zheng Ge](https://joker316701882.github.io/), Liang Zhao, [Jianjian Sun](https://scholar.google.com/citations?user=MVZrGkYAAAAJ&hl=en), [Yuang Peng](https://scholar.google.com.hk/citations?user=J0ko04IAAAAJ&hl=zh-CN&oi=ao), Chunrui Han, [Xiangyu Zhang](https://scholar.google.com/citations?user=yuB-cfoAAAAJ&hl=en)
 
@@ -14,7 +15,7 @@
 
 
 ## Release
-- [2024/9/13]🔥🔥🔥 We release the [Huggingface](https://huggingface.co/ucaslcl/GOT-OCR2_0) deployment. Have fun! 
+- [2024/9/13]🔥🔥🔥 We release the [Huggingface](https://huggingface.co/ucaslcl/GOT-OCR2_0) deployment. Thanks to Huggingface for providing the GPU resource for [demo](https://huggingface.co/spaces/Tonic/GOT-OCR). 
 - [2024/9/03]🔥🔥🔥 We open-source the codes, weights, and benchmarks. The paper can be found in this [repo](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/GOT-OCR-2.0-paper.pdf). We also have submitted it to Arxiv. 
 - [2024/9/03]🔥🔥🔥 We release the OCR-2.0 model GOT! 
 
