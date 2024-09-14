@@ -33,6 +33,7 @@ We encourage everyone to develop GOT applications based on this repo. Thanks for
 
 [CPU version of GOT](https://github.com/ElvisClaros/GOT-OCR2.0) ~ contributor: [@ElvisClaros](https://github.com/ElvisClaros)
 
+[Online demo](https://huggingface.co/spaces/Tonic/GOT-OCR) ~ contributor: [@Joseph Pollack](https://huggingface.co/Tonic)
 
 ## Contents
 - [Install](#install)
