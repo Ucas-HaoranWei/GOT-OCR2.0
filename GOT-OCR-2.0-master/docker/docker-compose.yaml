@@ -1,0 +1,32 @@
+services:
+  got-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    container_name: got-server
+    env_file:
+      - .env
+    ports:
+      - "${SERVER_PORT:-7860}:${SERVER_PORT:-7860}"
+    networks:
+      - got
+    volumes:
+      # - /root/.cache/huggingface/:/root/.cache/huggingface/  # huggingface
+      # - /root/.cache/modelscope:/root/.cache/modelscope  # modelscope
+      - "${HF_HOME:-/root/.cache/huggingface/}:${HF_HOME:-/root/.cache/huggingface/}"
+      - "./uploads:/app/uploads"
+      - "./results:/app/results"
+      - "./main.py:/app/main.py"
+    environment:
+      SERVER_HOST: "${SERVER_HOST:-}"
+    command: python3 main.py
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [ gpu ]
+
+networks:
+  got:
