@@ -139,7 +139,7 @@ deepspeed   /GOT-OCR-2.0-master/GOT/train/train_GOT.py \
  --num_train_epochs 1  \
  --learning_rate 2e-5   \
  --datasets pdf-ocr+scence \
- --output_dir /your/output.path
+ --output_dir /your/output/path
 ```
 **Note**:
 1. Change the corresponding data information in [constant.py](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/tree/main/GOT-OCR-2.0-master/GOT/utils).
