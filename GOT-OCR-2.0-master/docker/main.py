@@ -103,7 +103,7 @@ def log_execution_time(func):
                 result__ = await func(*args, **kwargs)
                 end_time__ = time.time()
                 execution_time__ = end_time__ - start_time
-                logger.info(f"{func.__name__} 执行耗时: {execution_time__:.4f} 秒")
+                logger.info(f"{func.__name__} execute: {execution_time__:.4f}s")
                 return result__
 
             return async_wrapper()
@@ -111,7 +111,7 @@ def log_execution_time(func):
             result = func(*args, **kwargs)
             end_time = time.time()
             execution_time = end_time - start_time
-            logger.info(f"{func.__name__} 执行耗时: {execution_time:.4f} 秒")
+            logger.info(f"{func.__name__} execute: {execution_time:.4f}s")
             return result
 
     return wrapper
