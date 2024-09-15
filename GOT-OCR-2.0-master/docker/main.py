@@ -164,19 +164,23 @@ def image_to_base64(image: Image) -> str:
 
 @log_execution_time
 def run_got(
-    image: str, got_mode: str, fine_grained_mode: str = "", ocr_color: str = "", ocr_box: str = ""
+    image: str,
+    got_mode: str,
+    fine_grained_mode: str | None = None,
+    ocr_color: str | None = None,
+    ocr_box: str | None = None,
 ) -> Tuple[str, Optional[str]]:
-    """运行GOT模型并返回结果。
+    """Run the GOT model and return the results.
 
     Args:
-        image (str): 图像路径。
-        got_mode (str): 模式选择。
-        fine_grained_mode (str, optional): 精细模式。默认为空。
-        ocr_color (str, optional): OCR颜色。默认为空。
-        ocr_box (str, optional): OCR框。默认为空。
+        image (str): Path to the image.
+        got_mode (str): Mode selection.
+        fine_grained_mode (str, optional): Fine-grained mode. Defaults to None.
+        ocr_color (str, optional): OCR color. Defaults to None.
+        ocr_box (str, optional): OCR box. Defaults to None.
 
     Returns:
-        Tuple[str, Optional[str]]: 结果文本和可选的HTML链接。
+        Tuple[str, Optional[str]]: Result text and optional HTML link.
     """
     logger.debug(f"run got - mode={got_mode} {ocr_color=} {ocr_box=}")
 
