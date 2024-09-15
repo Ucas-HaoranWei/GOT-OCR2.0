@@ -36,6 +36,8 @@ We encourage everyone to develop GOT applications based on this repo. Thanks for
 
 [Online demo](https://huggingface.co/spaces/Tonic/GOT-OCR) ~ contributor: [@Joseph Pollack](https://huggingface.co/Tonic)
 
+[Dokcer & client demo](https://github.com/QIN2DIM/GOT-OCR2.0) ~ contributor: [@QIN2DIM](https://github.com/QIN2DIM) 
+
 ## Contents
 - [Install](#install)
 - [GOT Weights](#got-weights)
