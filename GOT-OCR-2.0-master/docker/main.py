@@ -192,7 +192,7 @@ init_log(
 )
 settings = Settings()
 
-cache = Cache(directory=settings.DISKCACHE_FOLDER, timeout=settings.FILE_EXPIRATION_TIME)
+cache = Cache(directory=settings.DISKCACHE_FOLDER)
 
 sj = json.dumps(settings.model_dump(mode="json"), indent=2, ensure_ascii=False)
 logger.info(f"Load settings - {sj}")
