@@ -8,6 +8,7 @@ References:
 import asyncio
 import base64
 import gc
+import hashlib
 import json
 import os
 import shutil
@@ -17,13 +18,17 @@ import uuid
 from enum import Enum
 from functools import wraps
 from pathlib import Path
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Any
 
 import gradio as gr
+from diskcache import Cache
 from huggingface_hub import snapshot_download
 from loguru import logger
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from transformers import AutoModel, AutoTokenizer
+
+ROOT_DIR = Path(__file__).parent
+CACHE_DIR = ROOT_DIR.joinpath(".cache")
 
 
 class Settings(BaseSettings):
@@ -42,9 +47,26 @@ class Settings(BaseSettings):
     # (when checking argument for argument index in method wrapper_CUDA__index_select)
     DEVICE: str = "cuda:0"
 
-    UPLOAD_FOLDER: str = "uploads"
-    RESULTS_FOLDER: str = "results"
+    UPLOAD_FOLDER: str = str(CACHE_DIR.joinpath("uploads"))
+    RESULTS_FOLDER: str = str(CACHE_DIR.joinpath("results"))
+    DISKCACHE_FOLDER: str = str(CACHE_DIR.joinpath("memory"))
     FILE_EXPIRATION_TIME: int = 3600
+
+    def model_post_init(self, __context: Any) -> None:
+        for folder in [self.UPLOAD_FOLDER, self.RESULTS_FOLDER, self.DISKCACHE_FOLDER]:
+            Path(folder).mkdir(parents=True, exist_ok=True)
+
+        current_time = time.time()
+        for folder_ in [self.UPLOAD_FOLDER, self.RESULTS_FOLDER]:
+            for path in Path(folder_).glob("**/*"):
+                try:
+                    if current_time - path.stat().st_mtime > self.FILE_EXPIRATION_TIME:
+                        if path.is_file():
+                            path.unlink()
+                        elif path.is_dir():
+                            shutil.rmtree(path)
+                except Exception as err:
+                    logger.error(f"Error while cleaning up {path}: {str(err)}")
 
 
 def init_log(**sink_channel):
@@ -153,6 +175,15 @@ def load_model(model_name, device: str = "cuda"):
         raise
 
 
+def get_file_hash(file_path: str) -> str:
+    """Calculate the SHA256 hash of a file."""
+    sha256_hash = hashlib.sha256()
+    with open(file_path, "rb") as f:
+        for byte_block in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(byte_block)
+    return sha256_hash.hexdigest()
+
+
 # == Init == #
 init_log(
     runtime=Path(__file__).parent.joinpath("logs/runtime.log"),
@@ -160,6 +191,9 @@ init_log(
     serialize=Path(__file__).parent.joinpath("logs/serialize.log"),
 )
 settings = Settings()
+
+cache = Cache(directory=settings.DISKCACHE_FOLDER, timeout=settings.FILE_EXPIRATION_TIME)
+
 sj = json.dumps(settings.model_dump(mode="json"), indent=2, ensure_ascii=False)
 logger.info(f"Load settings - {sj}")
 
@@ -180,7 +214,39 @@ class GotMode(str, Enum):
     format_fine_grained_ocr = "format fine-grained OCR"
 
 
+def disk_cache(func):
+    """Decorator to implement disk caching for the run_got function."""
+
+    @wraps(func)
+    def wrapper(
+        image: str,
+        got_mode: str,
+        fine_grained_mode: str | None = None,
+        ocr_color: str | None = None,
+        ocr_box: str | None = None,
+    ) -> Tuple[str, Optional[str]]:
+        # Generate a unique key based on the function arguments and image content
+        image_hash = get_file_hash(image)
+        cache_key = f"{image_hash}:{got_mode}:{fine_grained_mode}:{ocr_color}:{ocr_box}"
+
+        # Check if the result is already in the cache
+        cached_result = cache.get(cache_key)
+        if cached_result is not None:
+            return cached_result
+
+        # If not in cache, run the original function
+        result = func(image, got_mode, fine_grained_mode, ocr_color, ocr_box)
+
+        # Store the result in the cache
+        cache.set(cache_key, result)
+
+        return result
+
+    return wrapper
+
+
 @log_execution_time
+@disk_cache
 def run_got(
     image: str,
     got_mode: str,
@@ -307,10 +373,6 @@ You need to upload your image below and choose one mode of GOT, then click "Subm
 
 
 def build_got_server():
-    # Ensure necessary folders exist
-    for folder in [settings.UPLOAD_FOLDER, settings.RESULTS_FOLDER]:
-        Path(folder).mkdir(parents=True, exist_ok=True)
-
     with gr.Blocks() as demo:
         gr.HTML(title_html)
         gr.Markdown(title_markdown)

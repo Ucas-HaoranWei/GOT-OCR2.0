@@ -15,8 +15,8 @@ services:
       # - /root/.cache/huggingface/:/root/.cache/huggingface/  # huggingface
       # - /root/.cache/modelscope:/root/.cache/modelscope  # modelscope
       - "${HF_HOME:-/root/.cache/huggingface/}:${HF_HOME:-/root/.cache/huggingface/}"
-      - "./uploads:/app/uploads"
-      - "./results:/app/results"
+      - "./caches:/app/.cache"
+      - "./logs:/app/logs"
       - "./main.py:/app/main.py"
     environment:
       SERVER_HOST: "${SERVER_HOST:-}"

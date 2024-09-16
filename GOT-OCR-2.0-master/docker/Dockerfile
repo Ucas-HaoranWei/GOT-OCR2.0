@@ -34,4 +34,5 @@ RUN pip install --index-url https://pypi.tuna.tsinghua.edu.cn/simple \
     numpy~=1.26.4 \
     megfile==3.1.2 \
     pydantic-settings \
-    loguru
+    loguru \
+    diskcache
