@@ -36,6 +36,8 @@ We encourage everyone to develop GOT applications based on this repo. Thanks for
 
 [Online demo](https://huggingface.co/spaces/Tonic/GOT-OCR) ~ contributor: [@Joseph Pollack](https://huggingface.co/Tonic)
 
+[Dokcer & client demo](https://github.com/QIN2DIM/GOT-OCR2.0) ~ contributor: [@QIN2DIM](https://github.com/QIN2DIM) 
+
 ## Contents
 - [Install](#install)
 - [GOT Weights](#got-weights)
@@ -139,7 +141,7 @@ deepspeed   /GOT-OCR-2.0-master/GOT/train/train_GOT.py \
  --num_train_epochs 1  \
  --learning_rate 2e-5   \
  --datasets pdf-ocr+scence \
- --output_dir /your/output.path
+ --output_dir /your/output/path
 ```
 **Note**:
 1. Change the corresponding data information in [constant.py](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/tree/main/GOT-OCR-2.0-master/GOT/utils).
