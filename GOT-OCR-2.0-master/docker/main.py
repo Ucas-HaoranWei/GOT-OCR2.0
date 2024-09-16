@@ -198,7 +198,7 @@ def run_got(
         ocr_box (str, optional): OCR box. Defaults to None.
 
     Returns:
-        Tuple[str, Optional[str]]: Result text and optional HTML link.
+        Tuple[str, Optional[str]]: Result latex code and optional rendered HTML content.
     """
     logger.debug(f"run got - mode={got_mode} {ocr_color=} {ocr_box=}")
 
@@ -363,9 +363,13 @@ def build_got_server():
             task_update,
             inputs=[task_dropdown],
             outputs=[fine_grained_dropdown, color_dropdown, box_input],
+            show_api=False,
         )
         fine_grained_dropdown.change(
-            fine_grained_update, inputs=[fine_grained_dropdown], outputs=[color_dropdown, box_input]
+            fine_grained_update,
+            inputs=[fine_grained_dropdown],
+            outputs=[color_dropdown, box_input],
+            show_api=False,
         )
 
         submit_button.click(
