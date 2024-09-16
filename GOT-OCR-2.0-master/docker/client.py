@@ -40,6 +40,7 @@ def demo(
     logger.debug(result)
 
     got_result = GotResult(answer=result[0], html_content=result[1])
+    return got_result
 
 
 if __name__ == "__main__":
