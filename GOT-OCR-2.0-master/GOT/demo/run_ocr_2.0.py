@@ -20,6 +20,7 @@ from transformers import TextStreamer
 import re
 from GOT.demo.process_results import punctuation_dict, svg_to_html
 import string
+from pathlib import Path
 
 DEFAULT_IMAGE_TOKEN = "<image>"
 DEFAULT_IMAGE_PATCH_TOKEN = '<imgpad>'
@@ -149,96 +150,74 @@ def eval_model(args):
         if args.render:
             print('==============rendering===============')
 
-            outputs = tokenizer.decode(output_ids[0, input_ids.shape[1]:]).strip()
-            
-            if outputs.endswith(stop_str):
-                outputs = outputs[:-len(stop_str)]
-            outputs = outputs.strip()
+        outputs = tokenizer.decode(output_ids[0, input_ids.shape[1]:]).strip()
+        
+        if outputs.endswith(stop_str):
+            outputs = outputs[:-len(stop_str)]
+        outputs = outputs.strip()
 
-            if '**kern' in outputs:
-                import verovio
-                from cairosvg import svg2png
-                import cv2
-                import numpy as np
-                tk = verovio.toolkit()
-                tk.loadData(outputs)
-                tk.setOptions({"pageWidth": 2100, "footer": 'none',
-               'barLineWidth': 0.5, 'beamMaxSlope': 15,
-               'staffLineWidth': 0.2, 'spacingStaff': 6})
-                tk.getPageCount()
-                svg = tk.renderToSVG()
-                svg = svg.replace("overflow=\"inherit\"", "overflow=\"visible\"")
+        results_dir = Path("./results")
+        results_dir.mkdir(exist_ok=True)
+        demo_html_path = results_dir / "demo.html"
 
-                svg_to_html(svg, "./results/demo.html")
+        if '**kern' in outputs:
+            import verovio
+            from cairosvg import svg2png
+            import cv2
+            import numpy as np
+            tk = verovio.toolkit()
+            tk.loadData(outputs)
+            tk.setOptions({"pageWidth": 2100, "footer": 'none',
+           'barLineWidth': 0.5, 'beamMaxSlope': 15,
+           'staffLineWidth': 0.2, 'spacingStaff': 6})
+            tk.getPageCount()
+            svg = tk.renderToSVG()
+            svg = svg.replace("overflow=\"inherit\"", "overflow=\"visible\"")
 
-            if args.type == 'format' and '**kern' not in outputs:
+            svg_to_html(svg, str(demo_html_path))
 
-                
-                if  '\\begin{tikzpicture}' not in outputs:
-                    html_path = "./render_tools/" + "/content-mmd-to-html.html"
-                    html_path_2 = "./results/demo.html"
-                    right_num = outputs.count('\\right')
-                    left_num = outputs.count('\left')
+        if args.type == 'format' and '**kern' not in outputs:
+            if '\\begin{tikzpicture}' not in outputs:
+                html_path = Path("./render_tools/content-mmd-to-html.html")
+                right_num = outputs.count('\\right')
+                left_num = outputs.count('\left')
 
-                    if right_num != left_num:
-                        outputs = outputs.replace('\left(', '(').replace('\\right)', ')').replace('\left[', '[').replace('\\right]', ']').replace('\left{', '{').replace('\\right}', '}').replace('\left|', '|').replace('\\right|', '|').replace('\left.', '.').replace('\\right.', '.')
+                if right_num != left_num:
+                    outputs = outputs.replace('\left(', '(').replace('\\right)', ')').replace('\left[', '[').replace('\\right]', ']').replace('\left{', '{').replace('\\right}', '}').replace('\left|', '|').replace('\\right|', '|').replace('\left.', '.').replace('\\right.', '.')
 
+                outputs = outputs.replace('"', '``').replace('$', '')
 
-                    outputs = outputs.replace('"', '``').replace('$', '')
+                outputs_list = outputs.split('\n')
+                gt = '+\n'.join(f'"{line.replace("\\", "\\\\")}\\n"' for line in outputs_list)
 
-                    outputs_list = outputs.split('\n')
-                    gt= ''
-                    for out in outputs_list:
-                        gt +=  '"' + out.replace('\\', '\\\\') + r'\n' + '"' + '+' + '\n' 
-                    
-                    gt = gt[:-2]
+            else:
+                html_path = Path("./render_tools/tikz.html")
+                outputs = outputs.translate(translation_table)
+                outputs_list = outputs.split('\n')
+                gt = ''
+                for out in outputs_list:
+                    if out:
+                        if '\\begin{tikzpicture}' not in out and '\\end{tikzpicture}' not in out:
+                            out = out.rstrip()
+                            if out:
+                                gt += out if out.endswith(';') else f"{out};\n"
+                        else:
+                            gt += f"{out}\n"
 
-                    with open(html_path, 'r') as web_f:
-                        lines = web_f.read()
-                        lines = lines.split("const text =")
-                        new_web = lines[0] + 'const text ='  + gt  + lines[1]
-                else:
-                    html_path = "./render_tools/" + "/tikz.html"
-                    html_path_2 = "./results/demo.html"
-                    outputs = outputs.translate(translation_table)
-                    outputs_list = outputs.split('\n')
-                    gt= ''
-                    for out in outputs_list:
-                        if out:
-                            if '\\begin{tikzpicture}' not in out and '\\end{tikzpicture}' not in out:
-                                while out[-1] == ' ':
-                                    out = out[:-1]
-                                    if out is None:
-                                        break
-    
-                                if out:
-                                    if out[-1] != ';':
-                                        gt += out[:-1] + ';\n'
-                                    else:
-                                        gt += out + '\n'
-                            else:
-                                gt += out + '\n'
+            with html_path.open('r') as web_f:
+                lines = web_f.read().split("const text =")
+                new_web = f"{lines[0]}const text ={gt}{lines[1]}"
 
-
-                    with open(html_path, 'r') as web_f:
-                        lines = web_f.read()
-                        lines = lines.split("const text =")
-                        new_web = lines[0] + gt + lines[1]
-
-                with open(html_path_2, 'w') as web_f_new:
-                    web_f_new.write(new_web)
-
-
-
-
+            with demo_html_path.open('w') as web_f_new:
+                web_f_new.write(new_web)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-name", type=str, default="facebook/opt-350m")
     parser.add_argument("--image-file", type=str, required=True)
     parser.add_argument("--type", type=str, required=True)
-    parser.add_argument("--box", type=str, default= '')
-    parser.add_argument("--color", type=str, default= '')
+    parser.add_argument("--box", type=str, default='')
+    parser.add_argument("--color", type=str, default='')
     parser.add_argument("--render", action='store_true')
     args = parser.parse_args()
 
