@@ -20,6 +20,7 @@ services:
       - "./main.py:/app/main.py"
     environment:
       SERVER_HOST: "${SERVER_HOST:-}"
+      HF_HUB_DISABLE_EXPERIMENTAL_WARNING: "1"
     command: python3 main.py
     deploy:
       resources:

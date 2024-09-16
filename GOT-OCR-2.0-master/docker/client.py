@@ -1,8 +1,8 @@
 from enum import Enum
-from typing import Tuple, Optional
 
 from gradio_client import Client, handle_file
 from loguru import logger
+from pydantic import BaseModel, Field
 
 
 class GotMode(str, Enum):
@@ -14,6 +14,11 @@ class GotMode(str, Enum):
     format_fine_grained_ocr = "format fine-grained OCR"
 
 
+class GotResult(BaseModel):
+    answer: str = Field(default="")
+    html_content: str | None = Field(default="")
+
+
 def demo(
     filepath_or_url: str,
     got_mode: GotMode = GotMode.plain_texts_ocr,
@@ -22,7 +27,7 @@ def demo(
     ocr_box: str = None,
     *,
     base_url: str = "http://127.0.0.1:7860/"
-) -> Tuple[str, Optional[str]]:
+) -> GotResult:
     client = Client(src=base_url)
     result = client.predict(
         image=handle_file(filepath_or_url),
@@ -34,9 +39,7 @@ def demo(
     )
     logger.debug(result)
 
-    # [0] type:str got output
-    # [1] type:str rendered html
-    return result
+    got_result = GotResult(answer=result[0], html_content=result[1])
 
 
 if __name__ == "__main__":

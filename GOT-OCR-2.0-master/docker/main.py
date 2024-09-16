@@ -7,7 +7,7 @@ References:
 
 import asyncio
 import base64
-import io
+import gc
 import json
 import os
 import shutil
@@ -20,7 +20,6 @@ from pathlib import Path
 from typing import Tuple, Optional
 
 import gradio as gr
-from PIL import Image
 from huggingface_hub import snapshot_download
 from loguru import logger
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -36,6 +35,12 @@ class Settings(BaseSettings):
 
     MODEL_NAME: str = "ucaslcl/GOT-OCR2_0"
     HF_HOME: str = "~/.cache/huggingface/"
+
+    # fixme unavailable field
+    #  "modeling_GOT.py", line 215, in forward --> self.embed_tokens(input_ids)
+    # RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:2 and cuda:0!
+    # (when checking argument for argument index in method wrapper_CUDA__index_select)
+    DEVICE: str = "cuda:0"
 
     UPLOAD_FOLDER: str = "uploads"
     RESULTS_FOLDER: str = "results"
@@ -112,12 +117,43 @@ def log_execution_time(func):
             end_time = time.time()
             execution_time = end_time - start_time
             logger.info(f"{func.__name__} execute: {execution_time:.4f}s")
+            gc.collect()
             return result
 
     return wrapper
 
 
-# == Logger Init == #
+def load_model(model_name, device: str = "cuda"):
+    try:
+        logger.debug(f"Loading snapshot - {model_name}")
+        model_cache = snapshot_download(model_name)
+
+        logger.debug("Initializing tokenizer")
+        _tokenizer = AutoTokenizer.from_pretrained(
+            model_cache, trust_remote_code=True, device_map=device
+        )
+
+        logger.debug("Initializing model")
+        _model = AutoModel.from_pretrained(
+            model_cache,
+            trust_remote_code=True,
+            low_cpu_mem_usage=True,
+            device_map=device,
+            use_safetensors=True,
+        )
+        _model = _model.eval().to(device)
+
+        logger.info(f"Model cache path: {model_cache}")
+        logger.info(f"Model loaded on device: {device}")
+
+        return _tokenizer, _model
+
+    except Exception as err:
+        logger.error(f"Error loading model: {str(err)}")
+        raise
+
+
+# == Init == #
 init_log(
     runtime=Path(__file__).parent.joinpath("logs/runtime.log"),
     error=Path(__file__).parent.joinpath("logs/error.log"),
@@ -127,23 +163,12 @@ settings = Settings()
 sj = json.dumps(settings.model_dump(mode="json"), indent=2, ensure_ascii=False)
 logger.info(f"Load settings - {sj}")
 
-# == Model Init == #
-logger.debug(f"Loading snapshot - {settings.MODEL_NAME}")
-model_cache = snapshot_download(settings.MODEL_NAME)
-tokenizer = AutoTokenizer.from_pretrained(model_cache, trust_remote_code=True)
-model = AutoModel.from_pretrained(
-    model_cache,
-    trust_remote_code=True,
-    low_cpu_mem_usage=True,
-    device_map="cuda",
-    use_safetensors=True,
-)
-model = model.eval().cuda()
-logger.success(f"Model cache path: {model_cache}")
-
-# Ensure necessary folders exist
-for folder in [settings.UPLOAD_FOLDER, settings.RESULTS_FOLDER]:
-    Path(folder).mkdir(parents=True, exist_ok=True)
+try:
+    tokenizer, model = load_model(settings.MODEL_NAME, settings.DEVICE)
+    model.generation_config.pad_token_id = tokenizer.pad_token_id
+except Exception as e:
+    logger.error(f"Failed to load model: {str(e)}")
+    sys.exit()
 
 
 class GotMode(str, Enum):
@@ -153,13 +178,6 @@ class GotMode(str, Enum):
     format_multi_crop_ocr = "format multi-crop OCR"
     plain_fine_grained_ocr = "plain fine-grained OCR"
     format_fine_grained_ocr = "format fine-grained OCR"
-
-
-def image_to_base64(image: Image) -> str:
-    """Convert an image to base64 string."""
-    buffered = io.BytesIO()
-    image.save(buffered, format="PNG")
-    return base64.b64encode(buffered.getvalue()).decode()
 
 
 @log_execution_time
@@ -236,26 +254,23 @@ def run_got(
             return res_markdown, f"{download_link}<br>{iframe}"
         else:
             return res_markdown, None
-    except Exception as e:
-        return f"Error: {str(e)}", None
-    finally:
-        if os.path.exists(image_path):
-            os.remove(image_path)
+    except Exception as err:
+        logger.exception(err)
+        return f"Error: {str(err)}", None
 
 
 def task_update(task: str) -> list:
     """Update UI components based on the selected task."""
     if "fine-grained" in task:
         return [gr.update(visible=True), gr.update(visible=False), gr.update(visible=False)]
-    else:
-        return [gr.update(visible=False), gr.update(visible=False), gr.update(visible=False)]
+    return [gr.update(visible=False), gr.update(visible=False), gr.update(visible=False)]
 
 
 def fine_grained_update(task: str) -> list:
     """Update UI components for fine-grained OCR options."""
     if task == "box":
         return [gr.update(visible=False, value=""), gr.update(visible=True)]
-    elif task == "color":
+    if task == "color":
         return [gr.update(visible=True), gr.update(visible=False, value="")]
 
 
@@ -280,82 +295,92 @@ title_html = """
 <a href="https://arxiv.org/abs/2409.01704">[📜 Paper]</a> 
 <a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/">[🌟 GitHub]</a> 
 """
+title_markdown = """
+"🔥🔥🔥This is the official online demo of GOT-OCR-2.0 model!!!"
+        
+### Demo Guidelines
+You need to upload your image below and choose one mode of GOT, then click "Submit" to run GOT model. More characters will result in longer wait times.
+- **plain texts OCR & format texts OCR**: The two modes are for the image-level OCR.
+- **plain multi-crop OCR & format multi-crop OCR**: For images with more complex content, you can achieve higher-quality results with these modes.
+- **plain fine-grained OCR & format fine-grained OCR**: In these modes, you can specify fine-grained regions on the input image for more flexible OCR. Fine-grained regions can be coordinates of the box, red color, blue color, or green color.
+"""
 
-with gr.Blocks() as demo:
-    gr.HTML(title_html)
-    gr.Markdown(
-        """
-    "🔥🔥🔥This is the official online demo of GOT-OCR-2.0 model!!!"
-    
-    ### Demo Guidelines
-    You need to upload your image below and choose one mode of GOT, then click "Submit" to run GOT model. More characters will result in longer wait times.
-    - **plain texts OCR & format texts OCR**: The two modes are for the image-level OCR.
-    - **plain multi-crop OCR & format multi-crop OCR**: For images with more complex content, you can achieve higher-quality results with these modes.
-    - **plain fine-grained OCR & format fine-grained OCR**: In these modes, you can specify fine-grained regions on the input image for more flexible OCR. Fine-grained regions can be coordinates of the box, red color, blue color, or green color.
-    """
-    )
 
-    with gr.Row():
+def build_got_server():
+    # Ensure necessary folders exist
+    for folder in [settings.UPLOAD_FOLDER, settings.RESULTS_FOLDER]:
+        Path(folder).mkdir(parents=True, exist_ok=True)
+
+    with gr.Blocks() as demo:
+        gr.HTML(title_html)
+        gr.Markdown(title_markdown)
+
+        with gr.Row():
+            with gr.Column():
+                image_input = gr.Image(type="filepath", label="upload your image")
+                task_dropdown = gr.Dropdown(
+                    choices=[
+                        GotMode.plain_texts_ocr.value,
+                        GotMode.format_texts_ocr.value,
+                        GotMode.plain_multi_crop_ocr.value,
+                        GotMode.format_multi_crop_ocr.value,
+                        GotMode.plain_fine_grained_ocr.value,
+                        GotMode.format_fine_grained_ocr.value,
+                    ],
+                    label="Choose one mode of GOT",
+                    value=GotMode.plain_texts_ocr.value,
+                    allow_custom_value=True,
+                )
+                fine_grained_dropdown = gr.Dropdown(
+                    choices=["box", "color"],
+                    label="fine-grained type",
+                    visible=False,
+                    allow_custom_value=True,
+                )
+                color_dropdown = gr.Dropdown(
+                    choices=["red", "green", "blue"],
+                    label="color list",
+                    visible=False,
+                    allow_custom_value=True,
+                )
+                box_input = gr.Textbox(
+                    label="input box: [x1,y1,x2,y2]",
+                    placeholder="e.g., [0,0,100,100]",
+                    visible=False,
+                )
+                submit_button = gr.Button("Submit")
+
+            with gr.Column():
+                ocr_result = gr.Textbox(label="GOT output")
+
         with gr.Column():
-            image_input = gr.Image(type="filepath", label="upload your image")
-            task_dropdown = gr.Dropdown(
-                choices=[
-                    GotMode.plain_texts_ocr.value,
-                    GotMode.format_texts_ocr.value,
-                    GotMode.plain_multi_crop_ocr.value,
-                    GotMode.format_multi_crop_ocr.value,
-                    GotMode.plain_fine_grained_ocr.value,
-                    GotMode.format_fine_grained_ocr.value,
-                ],
-                label="Choose one mode of GOT",
-                value=GotMode.plain_texts_ocr.value,
-                allow_custom_value=True,
+            gr.Markdown(
+                "**If you choose the mode with format, the mathpix result will be automatically rendered as follows:**"
             )
-            fine_grained_dropdown = gr.Dropdown(
-                choices=["box", "color"],
-                label="fine-grained type",
-                visible=False,
-                allow_custom_value=True,
-            )
-            color_dropdown = gr.Dropdown(
-                choices=["red", "green", "blue"],
-                label="color list",
-                visible=False,
-                allow_custom_value=True,
-            )
-            box_input = gr.Textbox(
-                label="input box: [x1,y1,x2,y2]", placeholder="e.g., [0,0,100,100]", visible=False
-            )
-            submit_button = gr.Button("Submit")
+            html_result = gr.HTML(label="rendered html", show_label=True)
 
-        with gr.Column():
-            ocr_result = gr.Textbox(label="GOT output")
-
-    with gr.Column():
-        gr.Markdown(
-            "**If you choose the mode with format, the mathpix result will be automatically rendered as follows:**"
+        task_dropdown.change(
+            task_update,
+            inputs=[task_dropdown],
+            outputs=[fine_grained_dropdown, color_dropdown, box_input],
         )
-        html_result = gr.HTML(label="rendered html", show_label=True)
+        fine_grained_dropdown.change(
+            fine_grained_update, inputs=[fine_grained_dropdown], outputs=[color_dropdown, box_input]
+        )
 
-    task_dropdown.change(
-        task_update,
-        inputs=[task_dropdown],
-        outputs=[fine_grained_dropdown, color_dropdown, box_input],
-    )
-    fine_grained_dropdown.change(
-        fine_grained_update, inputs=[fine_grained_dropdown], outputs=[color_dropdown, box_input]
-    )
+        submit_button.click(
+            run_got,
+            inputs=[image_input, task_dropdown, fine_grained_dropdown, color_dropdown, box_input],
+            outputs=[ocr_result, html_result],
+        )
+    return demo
 
-    submit_button.click(
-        run_got,
-        inputs=[image_input, task_dropdown, fine_grained_dropdown, color_dropdown, box_input],
-        outputs=[ocr_result, html_result],
-    )
 
 if __name__ == "__main__":
     cleanup_old_files()
     logger.success(f"Running on local URL:  http://{settings.SERVER_HOST}:{settings.SERVER_PORT}")
-    demo.launch(
+    got_server = build_got_server()
+    got_server.launch(
         share=True,
         server_name="0.0.0.0",
         show_error=True,
