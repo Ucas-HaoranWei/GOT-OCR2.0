@@ -38,6 +38,8 @@ We encourage everyone to develop GOT applications based on this repo. Thanks for
 
 [Dokcer & client demo](https://github.com/QIN2DIM/GOT-OCR2.0) ~ contributor: [@QIN2DIM](https://github.com/QIN2DIM) 
 
+[GUI of GOT](https://github.com/XJF2332/GOT-OCR-2-GUI) ~ contributor: [@XJF2332](https://github.com/XJF2332) 
+
 ## Contents
 - [Install](#install)
 - [GOT Weights](#got-weights)
