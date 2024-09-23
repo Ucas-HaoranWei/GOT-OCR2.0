@@ -4,6 +4,7 @@
 <a href="https://arxiv.org/abs/2409.01704"><img src="https://img.shields.io/badge/Paper-PDF-orange"></a> 
 <a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat.jpg"><img src="https://img.shields.io/badge/Wechat-blue"></a> 
 <a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat2.jpg"><img src="https://img.shields.io/badge/Wechat2-blue"></a> 
+<a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat3.jpg"><img src="https://img.shields.io/badge/Wechat3-blue"></a> 
 <a href="https://zhuanlan.zhihu.com/p/718163422"><img src="https://img.shields.io/badge/zhihu-red"></a> 
 <a href="https://huggingface.co/spaces/ucaslcl/GOT_online"><img src="https://img.shields.io/badge/demo-green"></a> 
 
@@ -37,6 +38,8 @@ We encourage everyone to develop GOT applications based on this repo. Thanks for
 [Online demo](https://huggingface.co/spaces/Tonic/GOT-OCR) ~ contributor: [@Joseph Pollack](https://huggingface.co/Tonic)
 
 [Dokcer & client demo](https://github.com/QIN2DIM/GOT-OCR2.0) ~ contributor: [@QIN2DIM](https://github.com/QIN2DIM) 
+
+[GUI of GOT](https://github.com/XJF2332/GOT-OCR-2-GUI) ~ contributor: [@XJF2332](https://github.com/XJF2332) 
 
 ## Contents
 - [Install](#install)
@@ -161,6 +164,8 @@ If you are interested in this work or have questions about the code or the paper
 
 **Note**:
 The first WeChat group is full, please join the [second](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat2.jpg) group if you are interested.
+
+The first and second WeChat groups are full, please join the [third](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat3.jpg) group if you are interested.
 
 ## Acknowledgement
 - [Vary](https://github.com/Ucas-HaoranWei/Vary/): the codebase we built upon!
