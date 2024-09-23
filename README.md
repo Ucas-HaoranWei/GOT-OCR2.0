@@ -119,7 +119,7 @@ The rendering results can be found in /results/demo.html. Please open the demo.h
 ## Train
 0. Train sample can be found [here](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/train_sample.jpg). Note that the '\<image>' in the 'conversations'-'human'-'value' is necessary!
 1. This codebase only supports post-training (stage-2/stage-3) upon our GOT weights.
-2. If you want train from stage-1 described in our paper, you need this [repo](https://github.com/Ucas-HaoranWei/Vary-tiny-600k).
+2. If you want to train from stage-1 described in our paper, you need this [repo](https://github.com/Ucas-HaoranWei/Vary-tiny-600k).
 
 ```Shell
 deepspeed   /GOT-OCR-2.0-master/GOT/train/train_GOT.py \
