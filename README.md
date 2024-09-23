@@ -1,6 +1,7 @@
 <h3><a href="">General OCR Theory: Towards OCR-2.0 via a Unified End-to-end Model</a></h3>
 
 <a href="https://huggingface.co/ucaslcl/GOT-OCR2_0"><img src="https://img.shields.io/badge/Huggingface-yellow"></a>
+<a href="https://modelscope.cn/models/stepfun-ai/GOT-OCR2_0"><img src="https://img.shields.io/badge/Modelscope-red"></a>
 <a href="https://arxiv.org/abs/2409.01704"><img src="https://img.shields.io/badge/Paper-PDF-orange"></a> 
 <a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat.jpg"><img src="https://img.shields.io/badge/Wechat-blue"></a> 
 <a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat2.jpg"><img src="https://img.shields.io/badge/Wechat2-blue"></a> 
@@ -16,6 +17,7 @@
 
 
 ## Release
+- [2024/9/23]🔥🔥🔥 We release the official [Modelscope demo](https://modelscope.cn/studios/stepfun-ai/GOT_official_online_demo). Thanks very much for Modelscope providing the GPU resource. 
 - [2024/9/14]🔥🔥🔥 We release the official [demo](https://huggingface.co/spaces/ucaslcl/GOT_online). Thanks very much for Huggingface providing the GPU resource. 
 - [2024/9/13]🔥🔥🔥 We release the [Huggingface](https://huggingface.co/ucaslcl/GOT-OCR2_0) deployment. 
 - [2024/9/03]🔥🔥🔥 We open-source the codes, weights, and benchmarks. The paper can be found in this [repo](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/GOT-OCR-2.0-paper.pdf). We also have submitted it to Arxiv. 
@@ -119,7 +121,7 @@ The rendering results can be found in /results/demo.html. Please open the demo.h
 ## Train
 0. Train sample can be found [here](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/train_sample.jpg). Note that the '\<image>' in the 'conversations'-'human'-'value' is necessary!
 1. This codebase only supports post-training (stage-2/stage-3) upon our GOT weights.
-2. If you want train from stage-1 described in our paper, you need this [repo](https://github.com/Ucas-HaoranWei/Vary-tiny-600k).
+2. If you want to train from stage-1 described in our paper, you need this [repo](https://github.com/Ucas-HaoranWei/Vary-tiny-600k).
 
 ```Shell
 deepspeed   /GOT-OCR-2.0-master/GOT/train/train_GOT.py \
