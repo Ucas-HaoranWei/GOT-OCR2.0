@@ -1,9 +1,13 @@
 <h3><a href="">General OCR Theory: Towards OCR-2.0 via a Unified End-to-end Model</a></h3>
 
-<a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/"><img src="https://img.shields.io/badge/Project-Page-Green"></a>
+<a href="https://huggingface.co/ucaslcl/GOT-OCR2_0"><img src="https://img.shields.io/badge/Huggingface-yellow"></a>
+<a href="https://modelscope.cn/models/stepfun-ai/GOT-OCR2_0"><img src="https://img.shields.io/badge/Modelscope-red"></a>
 <a href="https://arxiv.org/abs/2409.01704"><img src="https://img.shields.io/badge/Paper-PDF-orange"></a> 
 <a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat.jpg"><img src="https://img.shields.io/badge/Wechat-blue"></a> 
+<a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat2.jpg"><img src="https://img.shields.io/badge/Wechat2-blue"></a> 
+<a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat3.jpg"><img src="https://img.shields.io/badge/Wechat3-blue"></a> 
 <a href="https://zhuanlan.zhihu.com/p/718163422"><img src="https://img.shields.io/badge/zhihu-red"></a> 
+<a href="https://huggingface.co/spaces/ucaslcl/GOT_online"><img src="https://img.shields.io/badge/demo-green"></a> 
 
 [Haoran Wei*](https://scholar.google.com/citations?user=J4naK0MAAAAJ&hl=en), Chenglong Liu*, Jinyue Chen, Jia Wang, Lingyu Kong, Yanming Xu,  [Zheng Ge](https://joker316701882.github.io/), Liang Zhao, [Jianjian Sun](https://scholar.google.com/citations?user=MVZrGkYAAAAJ&hl=en), [Yuang Peng](https://scholar.google.com.hk/citations?user=J0ko04IAAAAJ&hl=zh-CN&oi=ao), Chunrui Han, [Xiangyu Zhang](https://scholar.google.com/citations?user=yuB-cfoAAAAJ&hl=en)
 
@@ -13,7 +17,9 @@
 
 
 ## Release
-
+- [2024/9/23]🔥🔥🔥 We release the official [Modelscope demo](https://modelscope.cn/studios/stepfun-ai/GOT_official_online_demo). Thanks very much for Modelscope providing the GPU resource. 
+- [2024/9/14]🔥🔥🔥 We release the official [demo](https://huggingface.co/spaces/ucaslcl/GOT_online). Thanks very much for Huggingface providing the GPU resource. 
+- [2024/9/13]🔥🔥🔥 We release the [Huggingface](https://huggingface.co/ucaslcl/GOT-OCR2_0) deployment. 
 - [2024/9/03]🔥🔥🔥 We open-source the codes, weights, and benchmarks. The paper can be found in this [repo](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/GOT-OCR-2.0-paper.pdf). We also have submitted it to Arxiv. 
 - [2024/9/03]🔥🔥🔥 We release the OCR-2.0 model GOT! 
 
@@ -27,7 +33,15 @@
 ## Community contributions
 We encourage everyone to develop GOT applications based on this repo. Thanks for the following contributions :
 
-[Colab of GOT](https://colab.research.google.com/drive/1nmiNciZ5ugQVp4rFbL9ZWpEPd92Y9o7p?usp=sharing)   ~      contributor： [@Zizhe Wang](https://github.com/PaperPlaneDeemo)
+[Colab of GOT](https://colab.research.google.com/drive/1nmiNciZ5ugQVp4rFbL9ZWpEPd92Y9o7p?usp=sharing)   ~      contributor: [@Zizhe Wang](https://github.com/PaperPlaneDeemo)
+
+[CPU version of GOT](https://github.com/ElvisClaros/GOT-OCR2.0) ~ contributor: [@ElvisClaros](https://github.com/ElvisClaros)
+
+[Online demo](https://huggingface.co/spaces/Tonic/GOT-OCR) ~ contributor: [@Joseph Pollack](https://huggingface.co/Tonic)
+
+[Dokcer & client demo](https://github.com/QIN2DIM/GOT-OCR2.0) ~ contributor: [@QIN2DIM](https://github.com/QIN2DIM) 
+
+[GUI of GOT](https://github.com/XJF2332/GOT-OCR-2-GUI) ~ contributor: [@XJF2332](https://github.com/XJF2332) 
 
 ## Contents
 - [Install](#install)
@@ -67,9 +81,10 @@ pip install ninja
 pip install flash-attn --no-build-isolation
 ```
 ## GOT Weights
+- [Huggingface](https://huggingface.co/ucaslcl/GOT-OCR2_0)
 - [Google Drive](https://drive.google.com/drive/folders/1OdDtsJ8bFJYlNUzCQG4hRkUL6V-qBQaN?usp=sharing)
 - [BaiduYun](https://pan.baidu.com/s/1G4aArpCOt6I_trHv_1SE2g) code: OCR2
-- Huggingface will be available soon.
+
 
 ## Demo
 1. plain texts OCR:
@@ -106,7 +121,7 @@ The rendering results can be found in /results/demo.html. Please open the demo.h
 ## Train
 0. Train sample can be found [here](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/train_sample.jpg). Note that the '\<image>' in the 'conversations'-'human'-'value' is necessary!
 1. This codebase only supports post-training (stage-2/stage-3) upon our GOT weights.
-2. If you want train from stage-1 described in our paper, you need this [repo](https://github.com/Ucas-HaoranWei/Vary-tiny-600k).
+2. If you want to train from stage-1 described in our paper, you need this [repo](https://github.com/Ucas-HaoranWei/Vary-tiny-600k).
 
 ```Shell
 deepspeed   /GOT-OCR-2.0-master/GOT/train/train_GOT.py \
@@ -131,7 +146,7 @@ deepspeed   /GOT-OCR-2.0-master/GOT/train/train_GOT.py \
  --num_train_epochs 1  \
  --learning_rate 2e-5   \
  --datasets pdf-ocr+scence \
- --output_dir /your/output.path
+ --output_dir /your/output/path
 ```
 **Note**:
 1. Change the corresponding data information in [constant.py](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/tree/main/GOT-OCR-2.0-master/GOT/utils).
@@ -148,6 +163,11 @@ python3 GOT/eval/evaluate_GOT.py --model-name /GOT_weights/ --gtfile_path xxxx.j
 
 ## Contact
 If you are interested in this work or have questions about the code or the paper, please join our communication [Wechat](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat.jpg) group.
+
+**Note**:
+The first WeChat group is full, please join the [second](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat2.jpg) group if you are interested.
+
+The first and second WeChat groups are full, please join the [third](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat3.jpg) group if you are interested.
 
 ## Acknowledgement
 - [Vary](https://github.com/Ucas-HaoranWei/Vary/): the codebase we built upon!
