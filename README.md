@@ -17,7 +17,7 @@
 
 
 ## Release
-- [2024/9/24]🔥🔥🔥 Support [ms-swift](https://github.com/modelscope/ms-swift) quick [Fine-tune](#fine-tune) for your own data. 
+- [2024/9/24]🔥🔥🔥 Support [ms-swift](https://github.com/modelscope/ms-swift/issues/2122) quick [Fine-tune](#fine-tune) for your own data. 
 - [2024/9/23]🔥🔥🔥 We release the official [Modelscope demo](https://modelscope.cn/studios/stepfun-ai/GOT_official_online_demo). Thanks very much for Modelscope providing the GPU resource. 
 - [2024/9/14]🔥🔥🔥 We release the official [demo](https://huggingface.co/spaces/ucaslcl/GOT_online). Thanks very much for Huggingface providing the GPU resource. 
 - [2024/9/13]🔥🔥🔥 We release the [Huggingface](https://huggingface.co/ucaslcl/GOT-OCR2_0) deployment. 
@@ -193,7 +193,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 swift sft \
 {"query": "<image><image>eeeee", "response": "fffff", "history": [], "images": ["image_path1", "image_path2"]}
 {"query": "EEEEE", "response": "FFFFF", "history": [["query1", "response1"], ["query2", "response2"]]}
 ```
-More details can be seen in [ms-swift](https://github.com/modelscope/ms-swift).
+More details can be seen in [ms-swift](https://github.com/modelscope/ms-swift/issues/2122).
 
 ## Eval
 1. We use the [Fox](https://github.com/ucaslcl/Fox) and [OneChart](https://github.com/LingyvKong/OneChart) benchmarks, and other benchmarks can be found in the weights download link.
