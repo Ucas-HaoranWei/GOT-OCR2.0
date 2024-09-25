@@ -17,7 +17,7 @@
 
 
 ## Release
-- [2024/9/24]🔥🔥🔥 Support ms-swift easy finetune [Modelscope](https://github.com/modelscope/ms-swift). 
+- [2024/9/24]🔥🔥🔥 Support [ms-swift](https://github.com/modelscope/ms-swift) easy [Fine-tune](#fine-tune) for your own data. 
 - [2024/9/23]🔥🔥🔥 We release the official [Modelscope demo](https://modelscope.cn/studios/stepfun-ai/GOT_official_online_demo). Thanks very much for Modelscope providing the GPU resource. 
 - [2024/9/14]🔥🔥🔥 We release the official [demo](https://huggingface.co/spaces/ucaslcl/GOT_online). Thanks very much for Huggingface providing the GPU resource. 
 - [2024/9/13]🔥🔥🔥 We release the [Huggingface](https://huggingface.co/ucaslcl/GOT-OCR2_0) deployment. 
@@ -49,6 +49,7 @@ We encourage everyone to develop GOT applications based on this repo. Thanks for
 - [GOT Weights](#got-weights)
 - [Demo](#demo)
 - [Train](#train)
+- [Fine-tune](#fine-tune)
 - [Eval](#eval)
 
 ***
@@ -155,7 +156,9 @@ deepspeed   /GOT-OCR-2.0-master/GOT/train/train_GOT.py \
 1. Change the corresponding data information in [constant.py](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/tree/main/GOT-OCR-2.0-master/GOT/utils).
 2. Change line 37 in [conversation_dataset_qwen.py](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/tree/main/GOT-OCR-2.0-master/GOT/data) to your data_name.
 
-## Fine-tune with ms-swift
+## Fine-tune
+Fine-tune with ms-swift:
+
 ```Shell
 git clone https://github.com/modelscope/ms-swift.git
 cd ms-swift
