@@ -149,10 +149,48 @@ deepspeed   /GOT-OCR-2.0-master/GOT/train/train_GOT.py \
  --datasets pdf-ocr+scence \
  --output_dir /your/output/path
 ```
+
+
 **Note**:
 1. Change the corresponding data information in [constant.py](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/tree/main/GOT-OCR-2.0-master/GOT/utils).
 2. Change line 37 in [conversation_dataset_qwen.py](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/tree/main/GOT-OCR-2.0-master/GOT/data) to your data_name.
 
+## Fine-tune with ms-swift
+```Shell
+git clone https://github.com/modelscope/ms-swift.git
+cd ms-swift
+pip install -e .[llm]
+```
+```Shell
+# default：sft LLM & projector, freeze vision encoder
+CUDA_VISIBLE_DEVICES=0 swift sft\
+--model_type got-ocr2 \
+--model_id_or_path stepfun-ai/GOT-OCR2_0 \
+--sft_type lora \
+--dataset latex-ocr-print#5000
+
+# Deepspeed ZeRO2
+NPROC_PER_NODE=4 \
+CUDA_VISIBLE_DEVICES=0,1,2,3 swift sft \
+--model_type got-ocr2 \
+--model_id_or_path stepfun-ai/GOT-OCR2_0 \
+--sft_type lora \
+--dataset latex-ocr-print#5000 \
+--deepspeed default-zero2
+```
+
+**With your data**:
+```Shell
+--dataset train.jsonl
+--val_dataset val.jsonl (optional)
+```
+**Data format**:
+```Shell
+{"query": "<image>55555", "response": "66666", "images": ["image_path"]}
+{"query": "<image><image>eeeee", "response": "fffff", "history": [], "images": ["image_path1", "image_path2"]}
+{"query": "EEEEE", "response": "FFFFF", "history": [["query1", "response1"], ["query2", "response2"]]}
+```
+More details can be seen in [ms-swift](https://github.com/modelscope/ms-swift).
 
 ## Eval
 1. We use the [Fox](https://github.com/ucaslcl/Fox) and [OneChart](https://github.com/LingyvKong/OneChart) benchmarks, and other benchmarks can be found in the weights download link.
