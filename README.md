@@ -17,7 +17,7 @@
 
 
 ## Release
-- [2024/9/24]🔥🔥🔥 Support ms-swift easy finetune [Modelscope](ms-swift). 
+- [2024/9/24]🔥🔥🔥 Support ms-swift easy finetune [Modelscope](https://github.com/modelscope/ms-swift). 
 - [2024/9/23]🔥🔥🔥 We release the official [Modelscope demo](https://modelscope.cn/studios/stepfun-ai/GOT_official_online_demo). Thanks very much for Modelscope providing the GPU resource. 
 - [2024/9/14]🔥🔥🔥 We release the official [demo](https://huggingface.co/spaces/ucaslcl/GOT_online). Thanks very much for Huggingface providing the GPU resource. 
 - [2024/9/13]🔥🔥🔥 We release the [Huggingface](https://huggingface.co/ucaslcl/GOT-OCR2_0) deployment. 
