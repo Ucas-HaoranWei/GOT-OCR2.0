@@ -211,6 +211,9 @@ The first WeChat group is full, please join the [second](https://github.com/Ucas
 
 The first and second WeChat groups are full, please join the [third](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat3.jpg) group if you are interested.
 
+**Note**:
+All three WeChat groups are full, don't hesitate to contact me by email, weihaoran18@mails.ucas.ac.cn, if you want to join the group.
+
 ## Acknowledgement
 - [Vary](https://github.com/Ucas-HaoranWei/Vary/): the codebase we built upon!
 - [Qwen](https://github.com/QwenLM/Qwen): the LLM base model of Vary, which is good at both English and Chinese!
