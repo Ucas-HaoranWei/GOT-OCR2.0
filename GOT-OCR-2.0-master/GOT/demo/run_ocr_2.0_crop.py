@@ -18,6 +18,7 @@ from GOT.model.plug.blip_process import BlipImageEvalProcessor
 from transformers import TextStreamer
 from natsort import natsorted
 import glob
+from pathlib import Path
 
 
 
@@ -212,32 +213,34 @@ def eval_model(args):
             outputs = outputs[:-len(stop_str)]
         outputs = outputs.strip()
 
-        html_path = "./render_tools/" + "/content-mmd-to-html.html"
-        html_path_2 = "./results/demo.html"
+        html_path = Path("./render_tools/content-mmd-to-html.html")
+        html_path_2 = Path("./results/demo.html")
+        
+        # Ensure the results directory exists
+        html_path_2.parent.mkdir(parents=True, exist_ok=True)
+
         right_num = outputs.count('\\right')
         left_num = outputs.count('\left')
 
         if right_num != left_num:
             outputs = outputs.replace('\left(', '(').replace('\\right)', ')').replace('\left[', '[').replace('\\right]', ']').replace('\left{', '{').replace('\\right}', '}').replace('\left|', '|').replace('\\right|', '|').replace('\left.', '.').replace('\\right.', '.')
 
-
         outputs = outputs.replace('"', '``').replace('$', '')
 
         outputs_list = outputs.split('\n')
-        gt= ''
+        gt = ''
         for out in outputs_list:
-            gt +=  '"' + out.replace('\\', '\\\\') + r'\n' + '"' + '+' + '\n' 
+            gt += f'"{out.replace("\\", "\\\\")}\\n"+\n'
         
-        gt = gt[:-2]
+        gt = gt[:-2]  # Remove the last '+\n'
 
-        with open(html_path, 'r') as web_f:
+        with html_path.open('r', encoding='utf-8') as web_f:
             lines = web_f.read()
             lines = lines.split("const text =")
-            new_web = lines[0] + 'const text ='  + gt  + lines[1]
+            new_web = f"{lines[0]}const text ={gt}{lines[1]}"
             
-        with open(html_path_2, 'w') as web_f_new:
+        with html_path_2.open('w', encoding='utf-8') as web_f_new:
             web_f_new.write(new_web)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
