@@ -20,7 +20,6 @@ RUN pip install --index-url https://pypi.tuna.tsinghua.edu.cn/simple \
     opencv-python \
     tiktoken==0.6.0 \
     accelerate==0.28.0 \
-    transformers==4.37.2 \
     bitsandbytes==0.41.0 \
     scikit-learn==1.2.2 \
     sentencepiece==0.1.99 \
