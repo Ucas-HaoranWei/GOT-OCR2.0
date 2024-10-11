@@ -17,6 +17,7 @@
 
 
 ## Release
+- [2024/10/11] Too many friends want to join the wechat group, so we created a fourth [group](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat4.jpg).
 - [2024/10/2] [onnx](https://github.com/BaofengZan/GOT-OCRv2-onnx) and [mnn](https://github.com/BaofengZan/mnn-llm-GOT-OCR2.0) versions of GOT-OCR2.0.
 - [2024/9/29]🔥🔥🔥 The community has implemented the first version of [llama_cpp_inference](https://github.com/1694439208/GOT-OCR-Inference).
 - [2024/9/24]🔥🔥🔥 Support [ms-swift](https://github.com/modelscope/ms-swift/issues/2122) quick [Fine-tune](#fine-tune) for your own data. 
@@ -213,12 +214,14 @@ python3 GOT/eval/evaluate_GOT.py --model-name /GOT_weights/ --gtfile_path xxxx.j
 If you are interested in this work or have questions about the code or the paper, please join our communication [Wechat](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat.jpg) group.
 
 **Note**:
-The first WeChat group is full, please join the [second](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat2.jpg) group if you are interested.
+All three wechat groups are full, please join [group 4](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat4.jpg).
 
-The first and second WeChat groups are full, please join the [third](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat3.jpg) group if you are interested.
+
+
+Too 
 
 **Note**:
-All three WeChat groups are full, don't hesitate to contact me by email, weihaoran18@mails.ucas.ac.cn, if you want to join the group.
+Don't hesitate to contact me by email, weihaoran18@mails.ucas.ac.cn, if you have any question.
 
 ## Acknowledgement
 - [Vary](https://github.com/Ucas-HaoranWei/Vary/): the codebase we built upon!
