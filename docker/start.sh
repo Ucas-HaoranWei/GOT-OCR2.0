@@ -1,3 +1,4 @@
+# shellcheck disable=SC2155
 export SERVER_HOST=$(hostname -I | awk '{print $1}')
 
 docker compose down

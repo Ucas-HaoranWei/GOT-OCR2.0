@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y wget libgl1-mesa-glx libglib2.0-0
 # https://huggingface.co/spaces/ucaslcl/GOT_online/blob/main/requirements.txt
 # https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/GOT-OCR-2.0-master/pyproject.toml#L15
 RUN pip install --index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+    modelscope \
     transformers \
     markdown2[all]  \
     sentencepiece \

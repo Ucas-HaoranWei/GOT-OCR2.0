@@ -4,23 +4,26 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
-    container_name: got-server
-    env_file:
-      - .env
+    container_name: "got-server-241012"
     ports:
-      - "${SERVER_PORT:-7860}:${SERVER_PORT:-7860}"
+      - "${SERVER_PORT:-17860}:${SERVER_PORT:-17860}"
     networks:
       - got
     volumes:
-      # - /root/.cache/huggingface/:/root/.cache/huggingface/  # huggingface
-      # - /root/.cache/modelscope:/root/.cache/modelscope  # modelscope
+      - "${MODELSCOPE_CACHE:-/root/.cache/modelscope}:${MODELSCOPE_CACHE:-/root/.cache/modelscope}"
       - "${HF_HOME:-/root/.cache/huggingface/}:${HF_HOME:-/root/.cache/huggingface/}"
       - "./caches:/app/.cache"
       - "./logs:/app/logs"
       - "./main.py:/app/main.py"
     environment:
+      DEVICE: "cuda:0"
       SERVER_HOST: "${SERVER_HOST:-}"
+      SERVER_PORT: 17860
       HF_HUB_DISABLE_EXPERIMENTAL_WARNING: "1"
+      HF_HOME: /root/.cache/huggingface/
+      MODELSCOPE_CACHE: /root/.cache/modelscope/
+      # Literal["huggingface", "modelscope"]
+      MODEL_SRC: "modelscope"
     command: python3 main.py
     deploy:
       resources:

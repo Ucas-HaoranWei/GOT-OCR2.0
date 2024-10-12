@@ -15,6 +15,7 @@ import shutil
 import sys
 import time
 import uuid
+from abc import ABC, abstractmethod
 from enum import Enum
 from functools import wraps
 from pathlib import Path
@@ -22,7 +23,6 @@ from typing import Tuple, Optional, Any
 
 import gradio as gr
 from diskcache import Cache
-from huggingface_hub import snapshot_download
 from loguru import logger
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from transformers import AutoModel, AutoTokenizer
@@ -38,9 +38,6 @@ class Settings(BaseSettings):
     SERVER_HOST: str = "0.0.0.0"
     SERVER_PORT: int = 7860
 
-    MODEL_NAME: str = "ucaslcl/GOT-OCR2_0"
-    HF_HOME: str = "~/.cache/huggingface/"
-
     # fixme unavailable field
     #  "modeling_GOT.py", line 215, in forward --> self.embed_tokens(input_ids)
     # RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:2 and cuda:0!
@@ -52,13 +49,23 @@ class Settings(BaseSettings):
     DISKCACHE_FOLDER: str = str(CACHE_DIR.joinpath("memory"))
     FILE_EXPIRATION_TIME: int = 3600
 
+    # https://huggingface.co/stepfun-ai/GOT-OCR2_0
+    # https://modelscope.cn/models/stepfun-ai/GOT-OCR2_0
+    MODEL_NAME: str = "stepfun-ai/GOT-OCR2_0"
+    MODEL_SRC: str = "huggingface"
+
     def model_post_init(self, __context: Any) -> None:
         for folder in [self.UPLOAD_FOLDER, self.RESULTS_FOLDER, self.DISKCACHE_FOLDER]:
             Path(folder).mkdir(parents=True, exist_ok=True)
 
+        self._clean_expired_files()
+        self._reset_model_src()
+
+    def _clean_expired_files(self):
+        """Clean up expired files in upload and results folders."""
         current_time = time.time()
-        for folder_ in [self.UPLOAD_FOLDER, self.RESULTS_FOLDER]:
-            for path in Path(folder_).glob("**/*"):
+        for folder in [self.UPLOAD_FOLDER, self.RESULTS_FOLDER]:
+            for path in Path(folder).glob("**/*"):
                 try:
                     if current_time - path.stat().st_mtime > self.FILE_EXPIRATION_TIME:
                         if path.is_file():
@@ -67,6 +74,11 @@ class Settings(BaseSettings):
                             shutil.rmtree(path)
                 except Exception as err:
                     logger.error(f"Error while cleaning up {path}: {str(err)}")
+
+    def _reset_model_src(self):
+        available_model_src = {"huggingface", "modelscope"}
+        if self.MODEL_SRC not in available_model_src:
+            self.MODEL_SRC = "huggingface"
 
 
 def init_log(**sink_channel):
@@ -145,36 +157,6 @@ def log_execution_time(func):
     return wrapper
 
 
-def load_model(model_name, device: str = "cuda"):
-    try:
-        logger.debug(f"Loading snapshot - {model_name}")
-        model_cache = snapshot_download(model_name)
-
-        logger.debug("Initializing tokenizer")
-        _tokenizer = AutoTokenizer.from_pretrained(
-            model_cache, trust_remote_code=True, device_map=device
-        )
-
-        logger.debug("Initializing model")
-        _model = AutoModel.from_pretrained(
-            model_cache,
-            trust_remote_code=True,
-            low_cpu_mem_usage=True,
-            device_map=device,
-            use_safetensors=True,
-        )
-        _model = _model.eval().to(device)
-
-        logger.info(f"Model cache path: {model_cache}")
-        logger.info(f"Model loaded on device: {device}")
-
-        return _tokenizer, _model
-
-    except Exception as err:
-        logger.error(f"Error loading model: {str(err)}")
-        raise
-
-
 def get_file_hash(file_path: str) -> str:
     """Calculate the SHA256 hash of a file."""
     sha256_hash = hashlib.sha256()
@@ -182,6 +164,109 @@ def get_file_hash(file_path: str) -> str:
         for byte_block in iter(lambda: f.read(4096), b""):
             sha256_hash.update(byte_block)
     return sha256_hash.hexdigest()
+
+
+class ModelDownloader(ABC):
+    """Abstract base class for model downloaders."""
+
+    @abstractmethod
+    def download(self, model_name: str) -> Optional[Path]:
+        """Download the model and return the path to the downloaded files."""
+        pass
+
+
+class ModelScopeDownloader(ModelDownloader):
+    """Model downloader for ModelScope."""
+
+    def download(self, model_name: str) -> Optional[Path]:
+        try:
+            from modelscope import snapshot_download
+        except ImportError:
+            logger.error("Please install modelscope sdk first. Run: pip install modelscope")
+            return None
+
+        model_dir = snapshot_download(model_name)
+        logger.success(f"Model files downloaded to: {model_dir}/models")
+        return Path(model_dir)
+
+
+class HuggingFaceDownloader(ModelDownloader):
+    """Model downloader for Hugging Face."""
+
+    def download(self, model_name: str) -> Optional[Path]:
+        try:
+            from huggingface_hub import snapshot_download
+        except ImportError:
+            logger.error("Please install huggingface_hub first. Run: pip install huggingface_hub")
+            return None
+
+        model_dir = snapshot_download(model_name)
+        logger.success(f"Model files downloaded to: {model_dir}/models")
+        return Path(model_dir)
+
+
+class ModelManager:
+    """Manages model downloading and loading."""
+
+    def __init__(self, model_src: str | None = None):
+        self.downloader = self._get_downloader(model_src)
+
+    @staticmethod
+    def _get_downloader(model_src: str | None = None) -> ModelDownloader:
+        match model_src:
+            case "modelscope":
+                return ModelScopeDownloader()
+            case _:
+                return HuggingFaceDownloader()
+
+    def download_model(self, model_name: str) -> Optional[Path]:
+        """Download the model using the appropriate downloader."""
+        return self.downloader.download(model_name)
+
+    def load_model(self, model_name: str, device: str = "cuda"):
+        """
+        Load the model and tokenizer.
+
+        Args:
+            model_name (str): Name of the model to load.
+            device (str): Device to load the model on.
+
+        Returns:
+            Tuple[AutoTokenizer, AutoModel]: Loaded tokenizer and model.
+
+        Raises:
+            Exception: If there's an error during model loading.
+        """
+        try:
+            logger.debug(f"Loading snapshot - {model_name}")
+            model_cache = self.download_model(model_name)
+
+            if model_cache is None:
+                raise ValueError("Failed to download the model.")
+
+            logger.debug("Initializing tokenizer")
+            _tokenizer = AutoTokenizer.from_pretrained(
+                model_cache, trust_remote_code=True, device_map=device
+            )
+
+            logger.debug("Initializing model")
+            _model = AutoModel.from_pretrained(
+                model_cache,
+                trust_remote_code=True,
+                low_cpu_mem_usage=True,
+                device_map=device,
+                use_safetensors=True,
+            )
+            _model = _model.eval().to(device)
+
+            logger.info(f"Model cache path: {model_cache}")
+            logger.info(f"Model loaded on device: {device}")
+
+            return _tokenizer, _model
+
+        except Exception as err:
+            logger.exception(f"Error loading model: {str(err)}")
+            raise
 
 
 # == Init == #
@@ -198,7 +283,8 @@ sj = json.dumps(settings.model_dump(mode="json"), indent=2, ensure_ascii=False)
 logger.info(f"Load settings - {sj}")
 
 try:
-    tokenizer, model = load_model(settings.MODEL_NAME, settings.DEVICE)
+    model_manager = ModelManager(model_src=settings.MODEL_SRC)
+    tokenizer, model = model_manager.load_model(settings.MODEL_NAME, settings.DEVICE)
     model.generation_config.pad_token_id = tokenizer.pad_token_id
 except Exception as e:
     logger.error(f"Failed to load model: {str(e)}")
