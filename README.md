@@ -216,12 +216,7 @@ If you are interested in this work or have questions about the code or the paper
 **Note**:
 All three wechat groups are full, please join [group 4](https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat4.jpg).
 
-
-
-Too 
-
-**Note**:
-Don't hesitate to contact me by email, weihaoran18@mails.ucas.ac.cn, if you have any question.
+Don't hesitate to contact me by email, weihaoran18@mails.ucas.ac.cn, if you have any questions.
 
 ## Acknowledgement
 - [Vary](https://github.com/Ucas-HaoranWei/Vary/): the codebase we built upon!
