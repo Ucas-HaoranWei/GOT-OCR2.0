@@ -172,4 +172,4 @@ async def upload_image(file: UploadFile = File(...)):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app="run_ocr:app", host="0.0.0.0", port=6006, workers=1)
+    uvicorn.run(app="run_ocr_serve:app", host="0.0.0.0", port=6006, workers=1)
