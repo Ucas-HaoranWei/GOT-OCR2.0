@@ -102,13 +102,14 @@ def eval_model(args):
     model_name = os.path.expanduser(args.model_name)
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+    device = args.device
 
 
-    model = GOTQwenForCausalLM.from_pretrained(model_name, low_cpu_mem_usage=True, device_map='cuda', use_safetensors=True, pad_token_id=151643).eval()
+    model = GOTQwenForCausalLM.from_pretrained(model_name, low_cpu_mem_usage=True, device_map=device, use_safetensors=True, pad_token_id=151643).eval()
 
 
 
-    model.to(device='cuda',  dtype=torch.bfloat16)
+    model.to(device=device,  dtype=torch.bfloat16)
 
 
     # vary old codes, no use
@@ -166,12 +167,12 @@ def eval_model(args):
 
     # qs = args.query
     if use_im_start_end:
-        qs = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_PATCH_TOKEN*image_token_len*ll + DEFAULT_IM_END_TOKEN + '\n' + qs 
+        qs = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_PATCH_TOKEN*image_token_len*ll + DEFAULT_IM_END_TOKEN + '\n' + qs
     else:
         qs = DEFAULT_IMAGE_TOKEN + '\n' + qs
 
 
-    
+
 
     conv_mode = "mpt"
     args.conv_mode = conv_mode
@@ -184,7 +185,10 @@ def eval_model(args):
 
     inputs = tokenizer([prompt])
 
-    input_ids = torch.as_tensor(inputs.input_ids).cuda()
+    if device == 'cpu':
+        input_ids = torch.as_tensor(inputs.input_ids).cpu()
+    else:
+        input_ids = torch.as_tensor(inputs.input_ids).cuda()
 
     stop_str = conv.sep if conv.sep_style != SeparatorStyle.TWO else conv.sep2
     keywords = [stop_str]
@@ -192,10 +196,15 @@ def eval_model(args):
     streamer = TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
 
 
-    with torch.autocast("cuda", dtype=torch.bfloat16):
+    with torch.autocast(device, dtype=torch.bfloat16):
+        if args.device == 'cpu':
+            images=[(image_list.float().cpu(), image_list.float().cpu())]
+        else:
+            images=[(image_list.half().cuda(), image_list.half().cuda())]
+
         output_ids = model.generate(
             input_ids,
-            images=[(image_list.half().cuda(), image_list.half().cuda())],
+            images= images,
             do_sample=False,
             num_beams = 1,
             # no_repeat_ngram_size = 20,
@@ -203,11 +212,11 @@ def eval_model(args):
             max_new_tokens=4096,
             stopping_criteria=[stopping_criteria]
             )
-        
+
     if args.render:
         print('==============rendering===============')
         outputs = tokenizer.decode(output_ids[0, input_ids.shape[1]:]).strip()
-        
+
         if outputs.endswith(stop_str):
             outputs = outputs[:-len(stop_str)]
         outputs = outputs.strip()
@@ -226,15 +235,15 @@ def eval_model(args):
         outputs_list = outputs.split('\n')
         gt= ''
         for out in outputs_list:
-            gt +=  '"' + out.replace('\\', '\\\\') + r'\n' + '"' + '+' + '\n' 
-        
+            gt +=  '"' + out.replace('\\', '\\\\') + r'\n' + '"' + '+' + '\n'
+
         gt = gt[:-2]
 
         with open(html_path, 'r') as web_f:
             lines = web_f.read()
             lines = lines.split("const text =")
             new_web = lines[0] + 'const text ='  + gt  + lines[1]
-            
+
         with open(html_path_2, 'w') as web_f_new:
             web_f_new.write(new_web)
 
@@ -246,6 +255,7 @@ if __name__ == "__main__":
     parser.add_argument("--conv-mode", type=str, default=None)
     parser.add_argument("--multi-page", action='store_true')
     parser.add_argument("--render", action='store_true')
+    parser.add_argument("--device", type=str, default='cuda')
     args = parser.parse_args()
 
     eval_model(args)
