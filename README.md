@@ -58,6 +58,7 @@ We encourage everyone to develop GOT applications based on this repo. Thanks for
 ## Contents
 - [Install](#install)
 - [GOT Weights](#got-weights)
+- [Benchmarks](#benchmarks)
 - [Demo](#demo)
 - [Train](#train)
 - [Fine-tune](#fine-tune)
@@ -98,6 +99,9 @@ pip install flash-attn --no-build-isolation
 - [Google Drive](https://drive.google.com/drive/folders/1OdDtsJ8bFJYlNUzCQG4hRkUL6V-qBQaN?usp=sharing)
 - [BaiduYun](https://pan.baidu.com/s/1G4aArpCOt6I_trHv_1SE2g) code: OCR2
 
+## Benchmarks
+- [Google Drive](https://drive.google.com/drive/folders/1OdDtsJ8bFJYlNUzCQG4hRkUL6V-qBQaN?usp=sharing)
+- [BaiduYun](https://pan.baidu.com/s/1G4aArpCOt6I_trHv_1SE2g) code: OCR2
 
 ## Demo
 1. plain texts OCR:
