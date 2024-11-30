@@ -123,7 +123,7 @@ python3 GOT/demo/run_ocr_2.0.py  --model-name  /GOT_weights/  --image-file  /an/
 ```Shell
 python3 GOT/demo/run_ocr_2.0_crop.py  --model-name  /GOT_weights/ --image-file  /an/image/file.png 
 ```
-5. Note：This feature is not batch inference!! Please read the paper and then use multi-page OCR (the image path contains multiple .png files):
+5. Note： This feature is not batch inference!! It works on the token level.  Please read the paper and then correct use multi-page OCR (the image path contains multiple .png files):
 ```Shell
 python3 GOT/demo/run_ocr_2.0_crop.py  --model-name  /GOT_weights/ --image-file  /images/path/  --multi-page
 ```
