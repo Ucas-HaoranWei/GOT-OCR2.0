@@ -239,14 +239,11 @@ Don't hesitate to contact me by email, weihaoran18@mails.ucas.ac.cn, if you have
   journal={arXiv preprint arXiv:2409.01704},
   year={2024}
 }
-@inproceedings{wei2025vary,
-  title={Vary: Scaling up the vision vocabulary for large vision-language model},
+@article{wei2023vary,
+  title={Vary: Scaling up the Vision Vocabulary for Large Vision-Language Models},
   author={Wei, Haoran and Kong, Lingyu and Chen, Jinyue and Zhao, Liang and Ge, Zheng and Yang, Jinrong and Sun, Jianjian and Han, Chunrui and Zhang, Xiangyu},
-  booktitle={European Conference on Computer Vision},
-  pages={408--424},
-  year={2025},
-  organization={Springer}
+  journal={arXiv preprint arXiv:2312.06109},
+  year={2023}
 }
-
 
 
