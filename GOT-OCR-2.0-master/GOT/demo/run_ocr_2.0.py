@@ -28,7 +28,7 @@ DEFAULT_IM_START_TOKEN = '<img>'
 DEFAULT_IM_END_TOKEN = '</img>'
 
 
- 
+
 translation_table = str.maketrans(punctuation_dict)
 
 
@@ -47,16 +47,16 @@ def eval_model(args):
     model_name = os.path.expanduser(args.model_name)
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+    device = args.device
+
+    model = GOTQwenForCausalLM.from_pretrained(model_name, low_cpu_mem_usage=True, device_map=device, use_safetensors=True, pad_token_id=151643).eval()
 
 
-    model = GOTQwenForCausalLM.from_pretrained(model_name, low_cpu_mem_usage=True, device_map='cuda', use_safetensors=True, pad_token_id=151643).eval()
 
-    
-
-    model.to(device='cuda',  dtype=torch.bfloat16)
+    model.to(device=device,  dtype=torch.bfloat16)
 
 
-    # TODO vary old codes, NEED del 
+    # TODO vary old codes, NEED del
     image_processor = BlipImageEvalProcessor(image_size=1024)
 
     image_processor_high =  BlipImageEvalProcessor(image_size=1024)
@@ -69,7 +69,7 @@ def eval_model(args):
 
     w, h = image.size
     # print(image.size)
-    
+
     if args.type == 'format':
         qs = 'OCR with format: '
     else:
@@ -97,7 +97,7 @@ def eval_model(args):
             qs = '[' + args.color + ']' + ' ' + 'OCR: '
 
     if use_im_start_end:
-        qs = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_PATCH_TOKEN*image_token_len + DEFAULT_IM_END_TOKEN + '\n' + qs 
+        qs = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_PATCH_TOKEN*image_token_len + DEFAULT_IM_END_TOKEN + '\n' + qs
     else:
         qs = DEFAULT_IMAGE_TOKEN + '\n' + qs
 
@@ -124,8 +124,10 @@ def eval_model(args):
 
     image_tensor_1 = image_processor_high(image_1)
 
-
-    input_ids = torch.as_tensor(inputs.input_ids).cuda()
+    if device == 'cpu':
+        input_ids = torch.as_tensor(inputs.input_ids).cpu()
+    else:
+        input_ids = torch.as_tensor(inputs.input_ids).cuda()
 
     stop_str = conv.sep if conv.sep_style != SeparatorStyle.TWO else conv.sep2
     keywords = [stop_str]
@@ -133,10 +135,14 @@ def eval_model(args):
     streamer = TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
 
 
-    with torch.autocast("cuda", dtype=torch.bfloat16):
+    with torch.autocast(device, dtype=torch.bfloat16):
+        if args.device == 'cpu':
+            images = [(image_tensor.unsqueeze(0).half().cpu(), image_tensor_1.unsqueeze(0).half().cpu())]
+        else:
+            images = [(image_tensor.unsqueeze(0).half().cuda(), image_tensor_1.unsqueeze(0).half().cuda())]
         output_ids = model.generate(
             input_ids,
-            images=[(image_tensor.unsqueeze(0).half().cuda(), image_tensor_1.unsqueeze(0).half().cuda())],
+            images= images,
             do_sample=False,
             num_beams = 1,
             no_repeat_ngram_size = 20,
@@ -144,13 +150,13 @@ def eval_model(args):
             max_new_tokens=4096,
             stopping_criteria=[stopping_criteria]
             )
-        
+
 
         if args.render:
             print('==============rendering===============')
 
             outputs = tokenizer.decode(output_ids[0, input_ids.shape[1]:]).strip()
-            
+
             if outputs.endswith(stop_str):
                 outputs = outputs[:-len(stop_str)]
             outputs = outputs.strip()
@@ -173,7 +179,7 @@ def eval_model(args):
 
             if args.type == 'format' and '**kern' not in outputs:
 
-                
+
                 if  '\\begin{tikzpicture}' not in outputs:
                     html_path = "./render_tools/" + "/content-mmd-to-html.html"
                     html_path_2 = "./results/demo.html"
@@ -189,8 +195,8 @@ def eval_model(args):
                     outputs_list = outputs.split('\n')
                     gt= ''
                     for out in outputs_list:
-                        gt +=  '"' + out.replace('\\', '\\\\') + r'\n' + '"' + '+' + '\n' 
-                    
+                        gt +=  '"' + out.replace('\\', '\\\\') + r'\n' + '"' + '+' + '\n'
+
                     gt = gt[:-2]
 
                     with open(html_path, 'r') as web_f:
@@ -210,7 +216,7 @@ def eval_model(args):
                                     out = out[:-1]
                                     if out is None:
                                         break
-    
+
                                 if out:
                                     if out[-1] != ';':
                                         gt += out[:-1] + ';\n'
@@ -240,6 +246,7 @@ if __name__ == "__main__":
     parser.add_argument("--box", type=str, default= '')
     parser.add_argument("--color", type=str, default= '')
     parser.add_argument("--render", action='store_true')
+    parser.add_argument("--device", type=str, default='cuda')
     args = parser.parse_args()
 
     eval_model(args)
