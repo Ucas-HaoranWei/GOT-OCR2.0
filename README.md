@@ -3,9 +3,6 @@
 <a href="https://huggingface.co/ucaslcl/GOT-OCR2_0"><img src="https://img.shields.io/badge/Huggingface-yellow"></a>
 <a href="https://modelscope.cn/models/stepfun-ai/GOT-OCR2_0"><img src="https://img.shields.io/badge/Modelscope-red"></a>
 <a href="https://arxiv.org/abs/2409.01704"><img src="https://img.shields.io/badge/Paper-PDF-orange"></a> 
-<a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat.jpg"><img src="https://img.shields.io/badge/Wechat-blue"></a> 
-<a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat2.jpg"><img src="https://img.shields.io/badge/Wechat2-blue"></a> 
-<a href="https://github.com/Ucas-HaoranWei/GOT-OCR2.0/blob/main/assets/wechat3.jpg"><img src="https://img.shields.io/badge/Wechat3-blue"></a> 
 <a href="https://zhuanlan.zhihu.com/p/718163422"><img src="https://img.shields.io/badge/zhihu-red"></a> 
 <a href="https://huggingface.co/spaces/ucaslcl/GOT_online"><img src="https://img.shields.io/badge/demo-green"></a> 
 
