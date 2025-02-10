@@ -32,6 +32,21 @@ DEFAULT_IM_END_TOKEN = '</img>'
 translation_table = str.maketrans(punctuation_dict)
 
 
+# Check that MPS or CUDA is available
+if torch.backends.mps.is_available():
+    torch.set_default_device('mps')
+    device = torch.device("mps")
+    device_name="mps"
+elif torch.cuda.is_available():
+    torch.set_default_device('cuda')
+    device = torch.device("cuda")
+    device_name="cuda"
+else:
+    torch.set_default_device('cpu')
+    device = torch.device("cpu")
+    device_name="cpu"
+
+    
 def load_image(image_file):
     if image_file.startswith('http') or image_file.startswith('https'):
         response = requests.get(image_file)
@@ -49,11 +64,11 @@ def eval_model(args):
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
 
 
-    model = GOTQwenForCausalLM.from_pretrained(model_name, low_cpu_mem_usage=True, device_map='cuda', use_safetensors=True, pad_token_id=151643).eval()
+    model = GOTQwenForCausalLM.from_pretrained(model_name, low_cpu_mem_usage=True, device_map=device, use_safetensors=True, pad_token_id=151643).eval()
 
     
 
-    model.to(device='cuda',  dtype=torch.bfloat16)
+    model.to(device=device,  dtype=torch.bfloat16)
 
 
     # TODO vary old codes, NEED del 
@@ -125,7 +140,7 @@ def eval_model(args):
     image_tensor_1 = image_processor_high(image_1)
 
 
-    input_ids = torch.as_tensor(inputs.input_ids).cuda()
+    input_ids = torch.as_tensor(inputs.input_ids).to(device)
 
     stop_str = conv.sep if conv.sep_style != SeparatorStyle.TWO else conv.sep2
     keywords = [stop_str]
@@ -133,10 +148,10 @@ def eval_model(args):
     streamer = TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
 
 
-    with torch.autocast("cuda", dtype=torch.bfloat16):
+    with torch.autocast(device_name, dtype=torch.bfloat16):
         output_ids = model.generate(
             input_ids,
-            images=[(image_tensor.unsqueeze(0).half().cuda(), image_tensor_1.unsqueeze(0).half().cuda())],
+            images=[(image_tensor.unsqueeze(0).half().to(device), image_tensor_1.unsqueeze(0).half().to(device))],
             do_sample=False,
             num_beams = 1,
             no_repeat_ngram_size = 20,
