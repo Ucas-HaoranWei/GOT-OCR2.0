@@ -30,7 +30,7 @@ os.system("python3 -m GOT.eval.pyevaltools.merge_results" + " "
 # if args.datatype == "OCR":
 
 
-a_type = 'plain'  # 'palin'; 'format'; 'scene'
+a_type = 'format'  # 'plain'; 'format'; 'scene'
 
 if a_type == 'plain':
     os.system("python3 -m GOT.eval.pyevaltools.eval_ocr" + " "
